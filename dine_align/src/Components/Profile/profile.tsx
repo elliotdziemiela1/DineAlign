@@ -3,6 +3,7 @@ import style from "./profile.module.css"
 import defaultPfp from "./DefaultPFP.jpg"
 
 function Profile() {
+    const [name, setName] = useState('John');
 
     return (
         <div className={style.container}>
@@ -15,40 +16,39 @@ function Profile() {
 
             {/* <!-- User Info Section --> */}
             <div className={style.userInfo}>
-                <h1>John Doe</h1>
-                <p>Web Developer | Music Enthusiast | Travel Lover</p>
-                <button className={style.addFriendBtn}>Add Friend</button>
-                <button className={style.messageBtn}>Message</button>
+                <h1>{name}</h1>
+                <p>Profile bio here</p>
             </div>
-
-            {/* <!-- Friends and Posts Section --> */}
             <div className={style.mainContent}>
-                {/* <!-- Friends List --> */}
-                <div className={style.friendsSection}>
-                    <h2>Friends</h2>
-                    <div className={style.friendsList}>
-                        <div className={style.friend}>
-                            <img src="friend1.jpg" alt="Friend 1"/>
-                            <p>Jane Smith</p>
+                <div className={style.dietContent}>
+                    {/* <div className={style.friendsSection}>
+                        <h2>Friends</h2>
+                        <div className={style.friendsList}>
+                            <div className={style.friend}>
+                                <img src="friend1.jpg" alt="Friend 1"/>
+                                <p>Jane Smith</p>
+                            </div>
+                            <div className={style.friend}>
+                                <img src="friend2.jpg" alt="Friend 2"/>
+                                <p>Michael Brown</p>
+                            </div>
                         </div>
-                        <div className={style.friend}>
-                            <img src="friend2.jpg" alt="Friend 2"/>
-                            <p>Michael Brown</p>
-                        </div>
-                        {/* <!-- Add more friends as needed --> */}
-                    </div>
-                </div>
+                    </div> */}
 
-                {/* <!-- Posts Section --> */}
-                <div className={style.postsSection}>
-                    <h2>Posts</h2>
-                    <div className={style.post}>
-                        <p>Just came back from an amazing trip!</p>
+                    {/* <!-- Diet Section --> */}
+                    <div className={style.currentDietSection}>
+                        <h2>{name}'s Current Diet</h2>
+                        <div className={style.currentDiet}>
+                            <p>Insert diet calendar component here</p>
+                        </div>
                     </div>
-                    <div className={style.post}>
-                        <p>Excited to work on new projects!</p>
+
+                    <div className={style.createdDietsSection}>
+                        <h2>{name}'s Created Diets</h2>
+                        <div className={style.createdDiets}>
+                            <p>Insert created diet calendars here</p>
+                        </div>
                     </div>
-                    {/* <!-- Add more posts as needed --> */}
                 </div>
             </div>
         </div>
