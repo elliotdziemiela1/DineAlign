@@ -22,20 +22,6 @@ function Profile() {
             </div>
             <div className={style.mainContent}>
                 <div className={style.dietContent}>
-                    {/* <div className={style.friendsSection}>
-                        <h2>Friends</h2>
-                        <div className={style.friendsList}>
-                            <div className={style.friend}>
-                                <img src="friend1.jpg" alt="Friend 1"/>
-                                <p>Jane Smith</p>
-                            </div>
-                            <div className={style.friend}>
-                                <img src="friend2.jpg" alt="Friend 2"/>
-                                <p>Michael Brown</p>
-                            </div>
-                        </div>
-                    </div> */}
-
                     {/* <!-- Diet Section --> */}
                     <div className={style.currentDietSection}>
                         <h2>{name}'s Current Diet</h2>
