@@ -1,0 +1,13 @@
+{
+  "name": "dine_align",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "scripts": {
+    "client": "npm start --prefix client",
+    "server": "npm start --prefix server",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  }
+}
