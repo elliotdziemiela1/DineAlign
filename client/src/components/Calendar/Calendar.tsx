@@ -8,30 +8,58 @@ interface Meal {
     link: string;
 }
 interface Day {
+    descriptor?: string;
     mealEntries: Meal[];
 }
+interface CalendarProps {
+    id?: number;
+}
 
-function Calendar(){
+function Calendar({ id }: CalendarProps){
     const [creator, setCreator] = useState("John");
     const [days, setDays] = useState<Day[]>([]);
+
+    useEffect(()=>{
+        let dietDays = [ // dummy data
+            {
+                descriptor: "Day 1",
+                mealEntries: [
+                    {time:"time", name:"meal", link:"link"},
+                    {time:"time", name:"meal", link:"link"}
+                ]
+            },
+            {
+                descriptor: "Day 2",
+                mealEntries: [
+                    {time:"time", name:"meal", link:"link"},
+                    {time:"time", name:"meal", link:"link"}
+                ]
+            },
+            {
+                descriptor: "Day 3",
+                mealEntries: [
+                    {time:"time", name:"meal", link:"link"},
+                    {time:"time", name:"meal", link:"link"}
+                ]
+            },
+            {
+                descriptor: "Day 4",
+                mealEntries: [
+                    {time:"time", name:"meal", link:"link"},
+                    {time:"time", name:"meal", link:"link"}
+                ]
+            }
+        ]; // make GET api call with "id" to get days
+        setDays(dietDays);
+    }, [])
 
     return (
         <div className={style.calendar}>
             <h2>Creator: {creator}</h2>
             <div className={style.calendarBody}>
                 {days.map((day) => 
-                    <Day mealEntries={day.mealEntries}/>
+                    <Day descriptor={day.descriptor} mealEntries={day.mealEntries}/>
                 )}
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
             </div>
         </div>
     );

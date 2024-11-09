@@ -4,3 +4,18 @@
     background-color: aqua;
     padding: 50px;
 }
+
+.meal {
+    display: flex;
+    background-color: brown;
+    margin: 10px;
+    flex-direction: column;
+}
+
+.modalClosed {
+    display: none;
+}
+
+.modalOpen {
+    display: block;
+}

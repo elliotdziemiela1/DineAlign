@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import style from './day.module.css'
 
 interface Meal {
@@ -7,14 +7,32 @@ interface Meal {
     link: string;
 }
 interface DayProps {
+    descriptor?: string;
     mealEntries?: Meal[];
 }
 
-const Day = ({ mealEntries } : DayProps) => {
+const Day = ({ descriptor, mealEntries } : DayProps) => {
+    const [modalOpen, setModalOpen] = useState(false);
+    function toggleModal(){
+        setModalOpen((open) => !open)
+    }
+
 
     return (
         <div className={style.day}>
-            <p>Hello World</p>
+            <p>{descriptor}</p>
+            <button className={style.modalButton} onClick={toggleModal}></button>
+            <div className={`${style.modal} ${modalOpen ? style.modalOpen : style.modalClosed}`}>
+                {mealEntries?.map((meal) => {
+                    return (
+                        <div className={style.meal}>
+                            <p>Name: {meal.name}</p>
+                            <p>Time: {meal.time}</p>
+                            <p>Link: {meal.link}</p>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 }
