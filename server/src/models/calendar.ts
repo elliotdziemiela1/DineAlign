@@ -35,7 +35,7 @@ var calendarSchema = new mongoose.Schema ({
         default:[]
     },
     ownedBy: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         default: null
     },
     privacy: {
@@ -61,4 +61,4 @@ const Calendar = mongoose.model('Calendar', calendarSchema);
 const Day = mongoose.model('Day', daySchema);
 const Meal = mongoose.model('Meal', mealSchema);
 
-export default {Calendar, Day, Meal};
+export { Calendar, Day, Meal };

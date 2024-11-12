@@ -26,23 +26,23 @@ var UserSchema = new mongoose.Schema ({
         default: "Unknown"
     }, 
     followers: {
-        type: [mongoose.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     following: {
-        type: [mongoose.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     followsDiet : {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         default: null
     },
     dietsCompleted: {
-        type: [mongoose.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     dietsCreated: {
-        type: [mongoose.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     }
 
