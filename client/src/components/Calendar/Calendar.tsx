@@ -1,40 +1,107 @@
 import React, { useState, useEffect } from 'react';
-import style from './calendar.module.css'
-import Day from './Day'
+import style from './Calendar.module.scss'
+import Day, { DetailedDay } from './Day'
+import { User } from '../Profile/Profile';
+import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
 
-interface Meal {
+export interface Meal {
     time: string;
     name: string;
-    link: string;
+    description?: string;
+    link?: string;
 }
-interface Day {
+export interface CalendarDay {
+    descriptor: string;
     mealEntries: Meal[];
 }
 
-function Calendar(){
-    const [creator, setCreator] = useState("John");
-    const [days, setDays] = useState<Day[]>([]);
+export enum Privacy {
+    PRIVATE = 0,
+    UNLISTED = 1,
+    PUBLIC = 2,
+}
+
+export interface CalendarDetails {
+    days: CalendarDay[];
+    owner: string; //Stringified ObjectId presumably
+    followedBy: string[];
+    tags: string[];
+    privacy: Privacy;
+    ratings: string[]; //TODO - Implement ratings at a later date
+}
+
+export interface DayDetails {
+    isOpen: boolean;
+    index: number;
+}
+
+/**
+ * Component Calendar takes in a calendar id, which, on creation, fetches the corresponding calendar
+ * from the backend
+ * @param id - String id of the calendar
+ */
+export default function Calendar({ user, calendarId }: {user: User | null, calendarId: string}) {
+    const [dayDetails, setDayDetails] = useState<DayDetails>({isOpen: false, index: -1});
+    const [calendar, setCalendar] = useState<CalendarDetails>({
+        //It is important that days MUST ALWAYS BE SORTED in ascending day number order
+        days: [],
+        owner: '',
+        followedBy: [],
+        tags: [],
+        privacy: Privacy.PRIVATE,
+        ratings: [],
+    });
+
+    // const [creator, setCreator] = useState("John");
+    // const [days, setDays] = useState<CalendarDay[]>([]);
+    
+    useEffect(()=>{
+        let dietDays = [ // dummy data
+            {
+                descriptor: "Day 1",
+                mealEntries: [
+                    {time:"time", name:"meal", link:"link"},
+                    {time:"time", name:"meal", link:"link"}
+                ]
+            },
+            {
+                descriptor: "Day 2",
+                mealEntries: [
+                    {time:"time", name:"meal", link:"link"},
+                    {time:"time", name:"meal", link:"link"}
+                ]
+            },
+            {
+                descriptor: "Day 3",
+                mealEntries: [
+                    {time:"time", name:"meal", link:"link"},
+                    {time:"time", name:"meal", link:"link"}
+                ]
+            },
+            {
+                descriptor: "Day 4",
+                mealEntries: [
+                    {time:"time", name:"meal", link:"link"},
+                    {time:"time", name:"meal", link:"link"}
+                ]
+            }
+        ]; // make GET api call with "calendarId" to get calendar
+        setCalendar({...calendar, days: dietDays});
+    });
+
+    const baseDay = user !== null && user.followsDiet !== null ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
 
     return (
         <div className={style.calendar}>
-            <h2>Creator: {creator}</h2>
+            <h2>Creator: {calendar.owner}</h2>
             <div className={style.calendarBody}>
-                {days.map((day) => 
-                    <Day mealEntries={day.mealEntries}/>
+                {calendar.days.map((day, idx) => 
+                    <Day index={idx} key={idx} dayOfWeek={getDayOfWeek(baseDay + idx)}
+                        descriptor={day.descriptor ?? "No overview provided."} openModal={setDayDetails}/>
                 )}
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
-                <Day />
             </div>
+            <DetailedDay isOpen={dayDetails.isOpen} setDetails={setDayDetails}
+                details={dayDetails.index >= 0 && dayDetails.index < calendar.days.length ? calendar.days[dayDetails.index] : undefined}/>
         </div>
     );
 }
-
-export default Calendar

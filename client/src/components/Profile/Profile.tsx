@@ -3,6 +3,26 @@ import style from "./profile.module.css"
 import defaultPfp from "./DefaultPFP.jpg"
 import Calendar from "../Calendar/Calendar"
 
+export interface User {
+    name: string;
+    bio?: string;
+    age?: string;
+    sex?: string;
+    location?: string;
+    followers: string[];
+    following: string[];
+    followsDiet: DietDetails | null;
+    completedDiets: number;
+    dietsCreated: string[];
+}
+
+export interface DietDetails {
+    diet: string;
+    dietStarted: Date;
+    daysCompleted: boolean[];
+    repeating: boolean;
+}
+
 function Profile() {
     const [name, setName] = useState('John');
 
@@ -22,25 +42,11 @@ function Profile() {
             </div>
             <div className={style.mainContent}>
                 <div className={style.dietContent}>
-                    {/* <div className={style.friendsSection}>
-                        <h2>Friends</h2>
-                        <div className={style.friendsList}>
-                            <div className={style.friend}>
-                                <img src="friend1.jpg" alt="Friend 1"/>
-                                <p>Jane Smith</p>
-                            </div>
-                            <div className={style.friend}>
-                                <img src="friend2.jpg" alt="Friend 2"/>
-                                <p>Michael Brown</p>
-                            </div>
-                        </div>
-                    </div> */}
-
                     {/* <!-- Diet Section --> */}
                     <div className={style.currentDietSection}>
                         <h2>{name}'s Current Diet</h2>
                         <div className={style.currentDiet}>
-                            <Calendar />
+                            <Calendar user={null} calendarId={''}/>
                         </div>
                     </div>
 
