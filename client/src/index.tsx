@@ -4,7 +4,6 @@ import './index.css';
 import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements, Navigate } from 'react-router-dom';
 import NavBar from './components/NavBar/NavBar';
 import Home from './components/Home/Home';
-import Calendar from './components/Calendar/Calendar';
 import Profile from './components/Profile/Profile';
 //import reportWebVitals from './reportWebVitals';
 
@@ -21,7 +20,6 @@ const router = createBrowserRouter(createRoutesFromElements([
     <Route index element={<Navigate to="/home" replace={true}/>}/>
     <Route path="/home" element={<Home/>}/>
     <Route path="/profile" element={<Profile/>}/>
-    <Route path="/calendar" element={<Calendar/>}/>
     <Route path="/editor" element={<div>Not implemented.</div>}/>
     <Route path="/search" element={<div>Not implemented.</div>}/>
     <Route path="/login" element={<div>Not implemented.</div>}/>

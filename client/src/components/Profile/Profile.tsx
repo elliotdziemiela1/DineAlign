@@ -3,6 +3,26 @@ import style from "./profile.module.css"
 import defaultPfp from "./DefaultPFP.jpg"
 import Calendar from "../Calendar/Calendar"
 
+export interface User {
+    name: string;
+    bio?: string;
+    age?: string;
+    sex?: string;
+    location?: string;
+    followers: string[];
+    following: string[];
+    followsDiet: DietDetails | null;
+    completedDiets: number;
+    dietsCreated: string[];
+}
+
+export interface DietDetails {
+    diet: string;
+    dietStarted: Date;
+    daysCompleted: boolean[];
+    repeating: boolean;
+}
+
 function Profile() {
     const [name, setName] = useState('John');
 
@@ -26,7 +46,7 @@ function Profile() {
                     <div className={style.currentDietSection}>
                         <h2>{name}'s Current Diet</h2>
                         <div className={style.currentDiet}>
-                            <Calendar />
+                            <Calendar user={null} calendarId={''}/>
                         </div>
                     </div>
 
