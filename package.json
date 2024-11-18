@@ -6,8 +6,7 @@
     "concurrently": "^9.1.0"
   },
   "scripts": {
-    "client": "npm start --prefix client",
-    "server": "npm start --prefix server",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm start --prefix client\" \"npm start --prefix server\"",
+    "build": "./startapp.sh"
   }
 }
