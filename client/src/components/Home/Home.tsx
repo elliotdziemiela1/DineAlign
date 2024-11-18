@@ -54,9 +54,9 @@ export default function Home() {
 
     return (
         <div className={styles.layout}>
-            <div className={styles.notsure}>
+            {/* <div className={styles.notsure}>
                 test
-            </div>
+            </div> */}
             <div className={styles.feed}>
                 <h2>Popular Diets:</h2>
                 {popularCalendarIDs?.map((id, idx) => <div className={styles.popularCalDiv}>
@@ -64,6 +64,7 @@ export default function Home() {
                     </div>)}
             </div>
             <div className={styles.diet}>
+                <h2>Today's Menu</h2>
                 {showDiet()}
             </div>
         </div>
