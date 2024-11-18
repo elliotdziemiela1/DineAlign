@@ -3,6 +3,7 @@ import style from './Calendar.module.scss'
 import Day, { CurrentDay, DetailedDay } from './Day'
 import { User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
+import { fetchCalendar, fetchUser } from "../../services/fetchData";
 
 export interface Meal {
     time: string;
@@ -66,37 +67,12 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     // const [days, setDays] = useState<CalendarDay[]>([]);
     
     useEffect(()=>{
-        let dietDays = [ // dummy data
-            {
-                descriptor: "Day 1",
-                mealEntries: [
-                    {time:"time", name:"meal", link:"link"},
-                    {time:"time", name:"meal", link:"link"}
-                ]
-            },
-            {
-                descriptor: "Day 2",
-                mealEntries: [
-                    {time:"time", name:"meal", link:"link"},
-                    {time:"time", name:"meal", link:"link"}
-                ]
-            },
-            {
-                descriptor: "Day 3",
-                mealEntries: [
-                    {time:"time", name:"meal", link:"link"},
-                    {time:"time", name:"meal", link:"link"}
-                ]
-            },
-            {
-                descriptor: "Day 4",
-                mealEntries: [
-                    {time:"time", name:"meal", link:"link"},
-                    {time:"time", name:"meal", link:"link"}
-                ]
-            }
-        ]; // make GET api call with "calendarId" to get calendar
-        setCalendar(c => {return {...c, days: dietDays}});
+        // setCalendar(c => {return {...c, days: dietDays}});
+        async function fetchCal(){
+            let cal = await fetchCalendar(calendarId);
+            setCalendar(cal);
+        }
+        fetchCal();
     }, []);
 
     const startDate = user?.followsDiet?.dietStarted ?? new Date();

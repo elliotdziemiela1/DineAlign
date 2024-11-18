@@ -36,11 +36,11 @@ export async function fetchCalendar(id: string): Promise<CalendarDetails | null>
                 ]
             }
         ],
-        owner: '',
-        followedBy: [],
-        tags: [],
+        owner: 'Test Owner',
+        followedBy: ['Test Follower 1', 'test follower 2', 'test follower 3', 'test follower 4'],
+        tags: ["test tag 1", "Test tag 2"],
         privacy: Privacy.PRIVATE,
-        ratings: [],
+        ratings: ["test rating 1", "test rating 2", "test rating 3"],
     };
 }
 
