@@ -51,7 +51,7 @@ export default function Profile() {
             repeating: false,
         },
         completedDiets: 0,
-        dietsCreated: [],
+        dietsCreated: ["cal1", "cal2", "cal3"],
     });
 
     
@@ -83,7 +83,10 @@ export default function Profile() {
                     <div className={style.createdDietsSection}>
                         <h2>{user.name}'s Created Diets</h2>
                         <div className={style.createdDiets}>
-                            <p>Insert created diet calendars here</p>
+                            {user.dietsCreated.map(d => {
+                                return <div className={style.createdDiet}>
+                                <Calendar user={null} calendarId={d} />
+                                </div>})}
                         </div>
                     </div>
                 </div>
