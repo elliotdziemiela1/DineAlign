@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
-import style from "./profile.module.css"
+import React, { useContext, useEffect, useState } from "react";
+import style from "./Profile.module.css"
 import defaultPfp from "./DefaultPFP.jpg"
 import Calendar from "../Calendar/Calendar"
-
+import { auth } from "../../services/auth";
+import { Navigate } from "react-router-dom";
+import { UserCredential } from "firebase/auth";
+import { AuthContext } from "../..";
 export interface User {
     name: string;
     bio?: string;
@@ -11,7 +14,7 @@ export interface User {
     location?: string;
     followers: string[];
     following: string[];
-    followsDiet: DietDetails | null;
+    followsDiet?: DietDetails;
     completedDiets: number;
     dietsCreated: string[];
 }
@@ -23,37 +26,67 @@ export interface DietDetails {
     repeating: boolean;
 }
 
-function Profile() {
-    const [name, setName] = useState('John');
+export const EmptyUser = {
+    name: "",
+    followers: [],
+    following: [],
+    completedDiets: 0,
+    dietsCreated: [],
+};
+
+export default function Profile() {
+    
+    const bruh = useContext(AuthContext);
+    console.log(bruh);
+    
+    //Replace with EmptyUser later
+    const [user, setUser] = useState<User>({
+        name: "John",
+        followers: [],
+        following: [],
+        followsDiet: {
+            diet: "test",
+            dietStarted: new Date('11-16-2024'),
+            daysCompleted: [],
+            repeating: false,
+        },
+        completedDiets: 0,
+        dietsCreated: ["cal1", "cal2", "cal3"],
+    });
+
+    
 
     return (
         <div className={style.container}>
             {/* <!-- Cover Photo and Profile Picture --> */}
             <div className={style.coverPhoto}>
                 <div className={style.profilePhoto}>
-                    <img src={defaultPfp} alt="Profile Photo"/>
+                    <img src={defaultPfp} alt="Profile"/>
                 </div>
             </div>
 
             {/* <!-- User Info Section --> */}
             <div className={style.userInfo}>
-                <h1>{name}</h1>
-                <p>Profile bio here</p>
+                <h1>{user.name}</h1>
+                <p>{user.bio ?? "No bio specified."}</p>
             </div>
             <div className={style.mainContent}>
                 <div className={style.dietContent}>
                     {/* <!-- Diet Section --> */}
                     <div className={style.currentDietSection}>
-                        <h2>{name}'s Current Diet</h2>
+                        <h2>{user.name}'s Current Diet</h2>
                         <div className={style.currentDiet}>
-                            <Calendar user={null} calendarId={''}/>
+                            <Calendar user={user} calendarId={user.followsDiet?.diet ?? ''}/>
                         </div>
                     </div>
 
                     <div className={style.createdDietsSection}>
-                        <h2>{name}'s Created Diets</h2>
+                        <h2>{user.name}'s Created Diets</h2>
                         <div className={style.createdDiets}>
-                            <p>Insert created diet calendars here</p>
+                            {user.dietsCreated.map(d => {
+                                return <div className={style.createdDiet}>
+                                <Calendar user={null} calendarId={d} />
+                                </div>})}
                         </div>
                     </div>
                 </div>
@@ -61,5 +94,3 @@ function Profile() {
         </div>
     );
 }
-
-export default Profile;

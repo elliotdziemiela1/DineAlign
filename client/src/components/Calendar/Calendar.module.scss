@@ -9,3 +9,76 @@
     display: flex;
     flex-direction: column;
 }
+
+.tags {
+    display: flex;
+    margin: 10px;
+}
+
+.tags h2 {
+    padding: 0 10px;
+}
+
+.tags p {
+    padding: 0 10px;
+    margin: 0 10px;
+    background-color: aquamarine;
+}
+
+.shortFollowersList {
+    display: flex;
+    margin: 10px;
+}
+
+.shortFollowersList p {
+    // background-color:coral;
+    padding: 0 10px;
+    margin: 0 10px
+}
+
+.modalClosed {
+    display: none;
+}
+
+.modalOpen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 20;
+}
+
+.modalOpen h2 {
+    background-color: antiquewhite;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.followersList {
+    display: flex;
+    flex-direction: column;
+    background-color: antiquewhite;
+    padding: 20px;
+    margin: 10px;
+}
+
+.followersList p {
+    margin: 10px 0;
+}
+
+.ratingsList {
+    display: flex;
+    flex-direction: column;
+    background-color: antiquewhite;
+    padding: 20px;
+    margin: 10px;
+}
+
+.ratingsList p {
+    margin: 10px 0;
+}

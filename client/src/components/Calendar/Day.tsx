@@ -1,11 +1,13 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import style from './Day.module.scss';
 import { CalendarDay, DayDetails, Meal } from './Calendar';
+import { useNavigate } from 'react-router-dom';
 
 interface DayProps {
     index: number;
     descriptor: string;
     dayOfWeek: string;
+    highlighted: boolean;
     openModal: React.Dispatch<React.SetStateAction<DayDetails>>;
 }
 
@@ -15,12 +17,33 @@ interface DayProps {
  * @param descriptor - String that describes the day's overall goal and meals TODO - MAKE SURE TO APPEND day of week/day of the diet to it
  * @param mealEntries - An array of Meals that make up this day's diet
  */
-export default function Day({ index, descriptor, dayOfWeek, openModal } : DayProps) {
+export default function Day({ index, descriptor, dayOfWeek, highlighted, openModal } : DayProps) {
     return (
-        <div className={style.day} onClick={() => openModal({isOpen: true, index: index})}>
+        <div className={`${style.day} ${highlighted && style.highlighted}`} onClick={() => openModal({isOpen: true, index: index})}>
             <p>{`Day ${index + 1}`}</p>
             <p>{dayOfWeek}</p>
             <p>{descriptor}</p>
+        </div>
+    );
+}
+
+export function CurrentDay({ index, day, dayOfWeek }: {index: number, day: CalendarDay, dayOfWeek: string}) {
+    const navigate = useNavigate();
+    return (
+        <div className={`${style.day}`} onClick={() => navigate("/profile")}>
+            <p>{`Day ${index + 1}`}</p>
+            <p>{dayOfWeek}</p>
+            <p>{day.descriptor ?? "No overview provided."}</p>
+            {day.mealEntries.map((mealEntry, idx) => {
+                return (
+                    <div key={idx}>
+                        <h3>{mealEntry.name}</h3>
+                        <p>{`Time of day: ${mealEntry.time}`}</p>
+                        {!!mealEntry.description && <p>{mealEntry.description}</p>}
+                        {!!mealEntry.link && <a href={mealEntry.link}>Source</a>}
+                    </div>
+                );
+            })}
         </div>
     );
 }

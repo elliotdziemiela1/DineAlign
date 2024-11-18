@@ -10,8 +10,9 @@ dotenv.config({path: __dirname + "/../config.env"})
 
 const app = express();
 const port = process.env.PORT;
+const path = require('path');
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/api', (req: Request, res: Response) => {
   res.send('Hello World!');
 })
 
@@ -35,6 +36,11 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
+
+app.use(express.static(path.join(__dirname, '../clientbuild')));
+app.get('*', function(req: Request, res: Response) {
+  return res.sendFile(path.resolve(__dirname, '../clientbuild', 'index.html'));
+});
 
 require('./routes')(app, router);
 
