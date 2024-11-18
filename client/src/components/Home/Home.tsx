@@ -2,8 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../..";
 import styles from "./Home.module.scss";
 import { EmptyUser, User } from "../Profile/Profile";
-import { fetchCalendar, fetchUser } from "../../services/fetchData";
+import { fetchCalendar, fetchUser, fetchPopularCalendarIDs } from "../../services/fetchData";
 import { CalendarDetails, showCurrentDay } from "../Calendar/Calendar";
+import Calendar from "../Calendar/Calendar";
 
 export default function Home() {
     function showDiet() {
@@ -25,6 +26,7 @@ export default function Home() {
     const userDetails = useContext(AuthContext);
     const [user, setUser] = useState<User>(EmptyUser);
     const [calendar, setCalendar] = useState<CalendarDetails | null>(null);
+    const [popularCalendarIDs, setPopularCalendarIDs] = useState<string[] | null>([])
     console.log("Home:", userDetails);
 
     useEffect(() => {
@@ -41,13 +43,25 @@ export default function Home() {
         fetcher();
         
     }, [userDetails]);
+
+    useEffect(() => {
+        async function fetchPopCalendars(){
+            const popCalendarIDs = await fetchPopularCalendarIDs();
+            setPopularCalendarIDs(popCalendarIDs);
+        }
+        fetchPopCalendars();
+    }, [])
+
     return (
         <div className={styles.layout}>
             <div className={styles.notsure}>
                 test
             </div>
             <div className={styles.feed}>
-                feed
+                <h2>Popular Diets:</h2>
+                {popularCalendarIDs?.map((id, idx) => <div className={styles.popularCalDiv}>
+                        <Calendar key={idx} user={null} calendarId={id}/>
+                    </div>)}
             </div>
             <div className={styles.diet}>
                 {showDiet()}
