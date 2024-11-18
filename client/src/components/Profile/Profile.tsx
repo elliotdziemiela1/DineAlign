@@ -46,7 +46,7 @@ export default function Profile() {
         following: [],
         followsDiet: {
             diet: "test",
-            dietStarted: new Date(),
+            dietStarted: new Date('11-16-2024'),
             daysCompleted: [],
             repeating: false,
         },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import style from './Calendar.module.scss'
-import Day, { DetailedDay } from './Day'
+import Day, { CurrentDay, DetailedDay } from './Day'
 import { User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
 
@@ -33,6 +33,16 @@ export interface CalendarDetails {
 export interface DayDetails {
     isOpen: boolean;
     index: number;
+}
+
+export function showCurrentDay(startDate: Date, days: CalendarDay[]): React.JSX.Element {
+    const currentTime = new Date();
+    const baseDay = getEnumFromDate(startDate);
+    const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
+    const currentDay = days[currentDayIndex];
+    return (
+        <CurrentDay index={currentDayIndex} dayOfWeek={getDayOfWeek((baseDay + currentDayIndex) % 7)} day={currentDay}/>
+    )
 }
 
 /**
@@ -86,17 +96,21 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                 ]
             }
         ]; // make GET api call with "calendarId" to get calendar
-        setCalendar({...calendar, days: dietDays});
-    });
+        setCalendar(c => {return {...c, days: dietDays}});
+    }, []);
 
+    const startDate = user?.followsDiet?.dietStarted ?? new Date();
     const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
+    const currentTime = new Date();
+    console.log(currentTime, startDate);
+    const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
 
     return (
         <div className={style.calendar}>
             <h2>Creator: {calendar.owner}</h2>
             <div className={style.calendarBody}>
                 {calendar.days.map((day, idx) => 
-                    <Day index={idx} key={idx} dayOfWeek={getDayOfWeek(baseDay + idx)}
+                    <Day index={idx} key={idx} dayOfWeek={getDayOfWeek((baseDay + idx) % 7)} highlighted={user !== null && currentDayIndex === idx}
                         descriptor={day.descriptor ?? "No overview provided."} openModal={setDayDetails}/>
                 )}
             </div>
