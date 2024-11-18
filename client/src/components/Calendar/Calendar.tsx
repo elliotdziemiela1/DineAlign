@@ -61,7 +61,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
         privacy: Privacy.PRIVATE,
         ratings: [],
     });
-
+    console.log("Calendar user:", user);
     // const [creator, setCreator] = useState("John");
     // const [days, setDays] = useState<CalendarDay[]>([]);
     
@@ -104,7 +104,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     const currentTime = new Date();
     console.log(currentTime, startDate);
     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
-
+    console.log(user, currentDayIndex);
     return (
         <div className={style.calendar}>
             <h2>Creator: {calendar.owner}</h2>
