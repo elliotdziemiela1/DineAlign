@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./Profile.module.css"
 import defaultPfp from "./DefaultPFP.jpg"
 import Calendar from "../Calendar/Calendar"
 import { auth } from "../../services/auth";
 import { Navigate } from "react-router-dom";
 import { UserCredential } from "firebase/auth";
+import { AuthContext } from "../..";
 export interface User {
     name: string;
     bio?: string;
@@ -33,7 +34,11 @@ export const EmptyUser = {
     dietsCreated: [],
 };
 
-function Profile() {
+export default function Profile() {
+    
+    const bruh = useContext(AuthContext);
+    console.log(bruh);
+    
     //Replace with EmptyUser later
     const [user, setUser] = useState<User>({
         name: "John",
@@ -49,10 +54,7 @@ function Profile() {
         dietsCreated: [],
     });
 
-    useEffect(() => {
-        const userDetails = auth.currentUser;
-        
-    });
+    
 
     return (
         <div className={style.container}>
@@ -74,7 +76,7 @@ function Profile() {
                     <div className={style.currentDietSection}>
                         <h2>{user.name}'s Current Diet</h2>
                         <div className={style.currentDiet}>
-                            <Calendar user={null} calendarId={''}/>
+                            <Calendar user={user} calendarId={user.followsDiet?.diet ?? ''}/>
                         </div>
                     </div>
 
@@ -89,5 +91,3 @@ function Profile() {
         </div>
     );
 }
-
-export default Profile;

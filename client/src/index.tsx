@@ -1,16 +1,22 @@
-import { StrictMode, createContext, useState } from 'react';
+import { StrictMode, createContext, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements, Navigate } from 'react-router-dom';
 import NavBar from './components/NavBar/NavBar';
 import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
-import { Authorize } from './services/auth';
-import { getAuth, onAuthStateChanged, UserInfo } from 'firebase/auth';
+import { Authorize, auth } from './services/auth';
+import { onAuthStateChanged, UserInfo } from 'firebase/auth';
+import Login from './components/Login/Login';
 
 //import reportWebVitals from './reportWebVitals';
 
-export const AuthContext = createContext<UserInfo | null>(null);
+export const AuthContext = createContext<AuthContextDetails>({user: null, loading: true});
+
+export interface AuthContextDetails {
+  user: UserInfo | null;
+  loading: boolean;
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -22,6 +28,26 @@ root.render(
   </StrictMode>
 );
 
+// Define the client side pages for the app
+// This defines the following pages and their urls:
+// -> /home, /profile, /editor, /search, /login
+// /home contains the home feed. Currently no nested routes planned
+// /profile contains the user's profile and current diet calendar
+// /editor contains the diet calendar editor
+// /search contains the searching and query page for searching users/calendars
+// /login handles signing in and/or signing up
+const router = createBrowserRouter(createRoutesFromElements([
+  <Route path="/" element={<NavBar/>}>
+    <Route index element={<Navigate to="/home" replace={true}/>}/>
+    <Route path="/home" element={<Home/>}/>
+    <Route path="/profile" element={<Authorize component={<Profile/>}/>}/>
+    <Route path="/editor" element={<div>Not implemented.</div>}/>
+    <Route path="/search" element={<div>Not implemented.</div>}/>
+    <Route path="/login" element={<Login/>}/>
+  </Route>,
+  <Route path="/*" element={<div>404 not found.</div>}/>
+]));
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
@@ -29,35 +55,19 @@ root.render(
 //reportWebVitals();
 
 function App() {
-  const auth = getAuth();
-  const [user, setUser] = useState<UserInfo | null>(null);
-  onAuthStateChanged(auth, (userInfo) => {
-    if (userInfo) {
-      setUser(userInfo);
-    } else {
-      setUser(null);
-    }
-  })
-
-  // Define the client side pages for the app
-  // This defines the following pages and their urls:
-  // -> /home, /profile, /editor, /search, /login
-  // /home contains the home feed. Currently no nested routes planned
-  // /profile contains the user's profile and current diet calendar
-  // /editor contains the diet calendar editor
-  // /search contains the searching and query page for searching users/calendars
-  // /login handles signing in and/or signing up
-  const router = createBrowserRouter(createRoutesFromElements([
-    <Route path="/" element={<NavBar/>}>
-      <Route index element={<Navigate to="/home" replace={true}/>}/>
-      <Route path="/home" element={<Home/>}/>
-      <Route path="/profile" element={<Authorize component={<Profile/>}/>}/>
-      <Route path="/editor" element={<div>Not implemented.</div>}/>
-      <Route path="/search" element={<div>Not implemented.</div>}/>
-      <Route path="/login" element={<div>Not implemented.</div>}/>
-    </Route>,
-    <Route path="/*" element={<div>404 not found.</div>}/>
-  ]));
+  const [user, setUser] = useState<AuthContextDetails>({user: null, loading: true});
+  useEffect(() => {
+    console.log("Attaching listener to auth.");
+    const unsubscribe = onAuthStateChanged(auth, (userInfo) => {
+      if (userInfo) {
+        console.log("User changed:", userInfo);
+        setUser({user: userInfo, loading: false});
+      } else {
+        setUser({user: null, loading: false});
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   return (
     <AuthContext.Provider value={user}>

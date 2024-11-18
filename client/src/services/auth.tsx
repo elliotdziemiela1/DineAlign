@@ -1,8 +1,9 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, UserCredential } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '..';
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyD6YA5Y68wuc9XFT8qzvRtoLRRgNZ73YvI",
@@ -12,11 +13,13 @@ const firebaseConfig = {
     messagingSenderId: "669287388418",
     appId: "1:669287388418:web:f16bf6a147f187a9c2de1b",
     measurementId: "G-YVK1BXQLKH"
-  };
+};
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+
+console.log("Initializing auth:", auth);
 
 export interface AuthenticationResult {
     success: boolean;
@@ -32,6 +35,7 @@ export async function signUp(email: string, password: string): Promise<Authentic
         success: true,
     }
     try {
+        console.log("Attempting to sign up with", email, password);
         result.user = await createUserWithEmailAndPassword(auth, email, password);
         const token = await result.user.user.getIdToken();
         sessionStorage.setItem("accessToken", token);
@@ -50,6 +54,7 @@ export async function signIn(email: string, password: string): Promise<Authentic
         success: true,
     };
     try {
+        console.log("Attempting to sign in with", email, password);
         result.user = await signInWithEmailAndPassword(auth, email, password);
         const token = await result.user.user.getIdToken();
         sessionStorage.setItem("accessToken", token);
@@ -67,11 +72,19 @@ export async function signOut() {
     auth.signOut();
 }
 
+// Wrapper to act as middleware 
+// Since contexts trigger re-renders, if the context is still loading, display a loading ui until the context updates
+// Once the auth state has resolved, loading will be false, and the final component will be loaded
 export function Authorize({ component }: {component: React.JSX.Element}) {
     const user = useContext(AuthContext);
-    if (user === null) {
+    console.log(user, auth.currentUser, auth);
+    if (user.user === null && user.loading === false) {
         return (
-            <Navigate to="signin"/>
+            <Navigate to="/login"/>
+        )
+    } else if (user.loading) {
+        return (
+            <div>Loading...</div>
         )
     }
     return (

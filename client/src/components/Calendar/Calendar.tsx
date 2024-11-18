@@ -89,7 +89,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
         setCalendar({...calendar, days: dietDays});
     });
 
-    const baseDay = user !== null && user.followsDiet !== null ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
+    const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
 
     return (
         <div className={style.calendar}>
