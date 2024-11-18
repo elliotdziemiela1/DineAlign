@@ -62,6 +62,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
         privacy: Privacy.PRIVATE,
         ratings: [],
     });
+    const [listOpen, setListOpen] = useState<Boolean>(false) // refers to the followers/ratings list
 
     // const [creator, setCreator] = useState("John");
     // const [days, setDays] = useState<CalendarDay[]>([]);
@@ -81,9 +82,39 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     console.log(currentTime, startDate);
     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
 
+
+
     return (
         <div className={style.calendar}>
             <h2>Creator: {calendar.owner}</h2>
+            <div className={style.tags}>
+                <h3>Tags: </h3>
+                {calendar.tags.map(t => <p>{t}</p>)}
+            </div>
+            <div className={style.shortFollowersList}>
+                <h3>Followers: </h3>
+                {calendar.followedBy.map((f, idx) => {
+                    if (idx < 3){
+                    return (
+                        <p>{f}</p>
+                    );}
+                    return 
+                })}
+                <button onClick={() => setListOpen(true)}>View all followers and ratings</button>
+            </div>
+
+            <div className={`${listOpen ? style.modalOpen : style.modalClosed}`}>
+                <button onClick={() => setListOpen(false)}> x </button>
+                <h2>Creator: {calendar.owner}</h2>
+                <div className={style.followersList}>
+                    <h3>Followers</h3>
+                    {calendar.followedBy.map(f => <p>{f}</p>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
+                </div>
+                <div className={style.ratingsList}>
+                    <h3>Ratings</h3>
+                    {calendar.ratings.map(r => <p>{r}</p>)}  {/* Assuming r is a ratingID, replace with api call to get r's details (maybe starts and description)*/}
+                </div>
+            </div>
             <div className={style.calendarBody}>
                 {calendar.days.map((day, idx) => 
                     <Day index={idx} key={idx} dayOfWeek={getDayOfWeek((baseDay + idx) % 7)} highlighted={user !== null && currentDayIndex === idx}
