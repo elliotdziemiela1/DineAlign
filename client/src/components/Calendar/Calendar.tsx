@@ -71,10 +71,12 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
         // setCalendar(c => {return {...c, days: dietDays}});
         async function fetchCal(){
             let cal = await fetchCalendar(calendarId);
-            setCalendar(cal);
+            if (cal !== null) {
+                setCalendar(cal);
+            }
         }
         fetchCal();
-    }, []);
+    }, [calendarId]);
 
     const startDate = user?.followsDiet?.dietStarted ?? new Date();
     const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
@@ -93,13 +95,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             </div>
             <div className={style.shortFollowersList}>
                 <h3>Followers: </h3>
-                {calendar.followedBy.map((f, idx) => {
-                    if (idx < 3){
-                    return (
-                        <p>{f}</p>
-                    );}
-                    return 
-                })}
+                {calendar.followedBy.map((f, idx) => idx < 3 && <p>{f}</p>)}
                 <button onClick={() => setListOpen(true)}>View all followers and ratings</button>
             </div>
 
