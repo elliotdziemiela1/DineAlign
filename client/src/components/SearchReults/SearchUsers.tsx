@@ -1,29 +1,25 @@
 import { useParams, Link } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { User } from "../Profile/Profile";
-import { fetchAllUserNamesAndIDs } from "../../services/fetchData";
+import { fetchAllUsers } from "../../services/fetchData";
 import styles from "./SearchUsers.module.scss"
 
-export interface ShortUserDetails {
-    id : string;
-    name: string;
-}
 
 export default function SearchUsers () {
     const { query } = useParams();
-    const [allUserNamesAndIDs, setAllUserNamesAndIDs] = useState<ShortUserDetails []>([]);
+    const [allUsers, setAllUsers] = useState<User []>([]);
 
     useEffect(() => {
         async function fetcher () {
-            const result = await fetchAllUserNamesAndIDs();
+            const result = await fetchAllUsers();
             if (result != null){
-                setAllUserNamesAndIDs(result);
+                setAllUsers(result);
             }
         }
         fetcher();
     }, []);
 
-    const sortedUsers = allUserNamesAndIDs.filter((user) => user.name.toLowerCase().includes(query.toLowerCase()))
+    const sortedUsers = allUsers.filter((user) => user.username.toLowerCase().includes(query.toLowerCase()))
 
     return (
     <div className={styles.container}>
@@ -32,8 +28,8 @@ export default function SearchUsers () {
             {sortedUsers.map((u, idx) => 
             <li key={idx}>
                 <div>
-                    <h3>{u.name}</h3>
-                    <Link to={`/users/${u.id}`}>View Profile</Link>
+                    <h3>{u.username}</h3>
+                    <Link to={`/profile/${u._id}`}>View Profile</Link>
                 </div>
             </li>)}
         </ul>

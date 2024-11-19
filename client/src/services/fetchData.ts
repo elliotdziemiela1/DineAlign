@@ -3,8 +3,6 @@ import { EmptyUser, User } from "../components/Profile/Profile";
 import { ShortUserDetails } from "../components/SearchReults/SearchUsers"
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5050/api"
-
 export async function fetchCalendar(id: string): Promise<CalendarDetails | null> {
     //TODO
     return {
@@ -67,8 +65,7 @@ export async function fetchUser(email: string): Promise<User | null> {
 }
 
 export async function fetchUserByID(id: string): Promise<User | null> {
-
-    const response = await axios.get(`${BASE_URL}/users/${id}`);
+    const response = await axios.get(`/api/users/${id}`);
     return response.data.data;
 }
 
@@ -80,17 +77,9 @@ export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
     ]
 }   
 
-export async function fetchAllUserNamesAndIDs(): Promise<ShortUserDetails[] | null> {
-    return [
-        {id: "id_1",
-            name: "joe"},
-        {id: "id_2",
-            name: "alex"},
-        {id: "id_3",
-            name: "arthur"},
-        {id: "id_4",
-            name: "owen"},
-        {id: "id_5",
-            name: "kari"},
-    ]
+export async function fetchAllUsers(): Promise<ShortUserDetails[] | null> {
+    const response = await axios.get(`/api/users`)
+    // const data = response.data.select()
+    console.log(response.data.data)
+    return response.data.data
 }   

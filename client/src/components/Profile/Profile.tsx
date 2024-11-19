@@ -9,6 +9,7 @@ import { AuthContext } from "../..";
 import { fetchUser, fetchUserByID } from "../../services/fetchData";
 
 export interface User {
+    _id?: string;
     username: string;
     bio?: string;
     age?: string;
