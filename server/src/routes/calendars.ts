@@ -57,19 +57,23 @@ const calendarsRouter = (router:Router) => {
     });
     
     router.get('/:id', async (req: Request, res:Response) => {
-        const query = Calendar.find();
-        const id = req.params["id"];
-        try{
-            const result = await query.exec();
-            if (result && result.length > 0){
-                res.status(200).json({message: "Valid response", data:result});
-            }
-            else{
-                res.status(404).json({message: "Calendar not found", data:{}})
-            }
+        const id = req.params.id;
+
+        // Validate ID
+        if (!isValidObjectId(id)) {
+            res.status(400).json({ message: "Invalid calendar ID" });
+            return; // Stops execution of post
         }
-        catch (err) {
-            res.status(500).json({message:"Internal server error - GET", data:err});
+    
+        try {
+            const calendar = await Calendar.findById(id);
+            if (!calendar) {
+                res.status(404).json({ message: "Calendar not found" });
+                return; // Stops execution of post
+            }
+            res.status(200).json({ message: "Valid response", data: calendar });
+        } catch (err) {
+            res.status(500).json({ message: "Internal Server Error", data: err });
         }
     });
 

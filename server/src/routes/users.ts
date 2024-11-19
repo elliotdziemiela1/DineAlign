@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import User from "../models/user";
-import mongoose, { mongo } from 'mongoose';
+import mongoose, { isValidObjectId, mongo } from 'mongoose';
 
 const usersRouter = (router:Router) => {
     router.get('/', async (req: Request, res: Response) =>{
@@ -59,21 +59,23 @@ const usersRouter = (router:Router) => {
     });
 
     router.get('/:id',async (req: Request, res: Response) => {
-        const query = User.find();
-        const id = req.params["id"];
-        const u_id = new mongoose.Types.ObjectId(id);
-        query.where({_id: u_id});
-        try{
-            const result = await query.exec();
-            if (result && result.length > 0){
-                res.status(200).json({message: "Valid response", data:result});
-            }
-            else{
-                res.status(404).json({message: "User not found", data:{}})
-            }
+        const id = req.params.id;
+
+        // Validate ID
+        if (!isValidObjectId(id)) {
+            res.status(400).json({ message: "Invalid user ID" });
+            return; // Stops execution of post
         }
-        catch (err) {
-            res.status(500).json({message:"Internal server error - GET", data:err});
+
+        try {
+            const user = await User.findById(id);
+            if(!user) {
+                res.status(404).json({ message: "User not found" });
+                return; // Stops execution of post
+            }
+            res.status(200).json({ message: "Valid response", data: user });
+        } catch (err) {
+            res.status(500).json({ message: "Internal Server Error", data: err });
         }
     });
 
