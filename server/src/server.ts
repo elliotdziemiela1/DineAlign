@@ -41,11 +41,12 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, '../clientbuild')));
+
+require('./routes')(app, router);
+
 app.get('*', function(req: Request, res: Response) {
   return res.sendFile(path.resolve(__dirname, '../clientbuild', 'index.html'));
 });
-
-require('./routes')(app, router);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
