@@ -84,6 +84,49 @@ const usersRouter = (router:Router) => {
         }
     });
 
+    router.put('/:id', async (req: Request, res: Response) => {
+        const id = req.params.id;
+        const updates = req.body;
+
+        try {
+            let user;
+            // if update by id
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                user = await User.findById(id);
+            }
+
+            // if update by email
+            else if (/\S+@\S+\.\S+/.test(id)) {
+                user = await User.findOne({ email: id });
+            }
+
+            else {
+                res.status(400).json({ messege: "Invalid id or email", data: {} });
+                return;
+            }
+
+            if(!user) {
+                res.status(404).json({ messsage: "User not found", data: {} });
+                return;
+            }
+
+            // Update all user attributes slated in updates
+            Object.keys(updates).forEach((key) => {
+                if(key in user && updates[key] !== undefined) {
+                    user[key] = updates[key]; // ignore error
+                }
+
+            });
+            
+            // save updated user
+            const updatedUser = await user.save();
+
+            res.status(200).json({ message: "User updated", data: updatedUser });
+        } catch (err) {
+            res.status(500).json({ message: "Internal Server Error", data: err });
+        }
+    });
+
     router.delete('/:id', async (req: Request, res: Response) => {
         const id = req.params.id;
         
