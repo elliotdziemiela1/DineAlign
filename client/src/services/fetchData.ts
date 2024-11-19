@@ -71,3 +71,4 @@ export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
         "id_3"
     ]
 }   
+
