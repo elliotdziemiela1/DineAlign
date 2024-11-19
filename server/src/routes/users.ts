@@ -2,12 +2,8 @@ import { Router, Request, Response } from 'express';
 import User from "../models/user";
 import mongoose, { mongo } from 'mongoose';
 
-module.exports = function (router:Router) {
-    const usersRoute = router.route("/");
-    const usersIdRoute = router.route("/:id");
-
-
-    usersRoute.get(async (req: Request, res: Response) =>{
+const usersRouter = (router:Router) => {
+    router.get('/', async (req: Request, res: Response) =>{
         const query = User.find({});
         try{
             // console.log("RESULT");
@@ -20,7 +16,7 @@ module.exports = function (router:Router) {
         }
     });
 
-    usersRoute.post(async (req:Request, res: Response) => {
+    router.post('/', async (req:Request, res: Response) => {
         if (req.body && (req.body["username"] && req.body["password"] && req.body["email"])){
             try{
                 const query = User.find();
@@ -62,7 +58,7 @@ module.exports = function (router:Router) {
         }
     });
 
-    usersIdRoute.get(async (req: Request, res: Response) => {
+    router.get('/:id',async (req: Request, res: Response) => {
         const query = User.find();
         const id = req.params["id"];
         const u_id = new mongoose.Types.ObjectId(id);
@@ -81,7 +77,7 @@ module.exports = function (router:Router) {
         }
     });
 
-    usersIdRoute.delete(async (req: Request, res: Response) => {
+    router.delete('/:id', async (req: Request, res: Response) => {
         const id = req.params["id"];
 
         // check if ID is valid
@@ -98,4 +94,6 @@ module.exports = function (router:Router) {
     });
 
     return router;
-}
+};
+
+export default usersRouter;

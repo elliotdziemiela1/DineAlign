@@ -1,13 +1,12 @@
 import { Router, Request, Response } from 'express';
 import { Calendar, Day, Meal } from "../models/calendar";
 import mongoose from 'mongoose';
+import { isValidObjectId, Types} from 'mongoose';
 
-module.exports = function (router:Router) {
+const calendarsRouter = (router:Router) => {
     const validPrivacy = ["unlisted", "private", "public"];
-    const calendarRoute = router.route("/");
-    const calendarIdRoute = router.route("/:id");
 
-    calendarRoute.get(async (req: Request, res: Response) =>{
+    router.get('/', async (req: Request, res: Response) =>{
         const query = Calendar.find();
         try{
             const result = await query.exec();
@@ -18,31 +17,45 @@ module.exports = function (router:Router) {
         }
     });
 
-    calendarRoute.post(async (req:Request, res:Response) => {
-        if (req.body){
-            var addedCalendar = new Calendar();
-            if (req.body["ownedBy"]){
-                const owner_id = new mongoose.Types.ObjectId(req.body["ownedBy"]);
-                addedCalendar["ownedBy"] = owner_id;
-            }
-            if (req.body["privacy"] && (validPrivacy.includes(req.body["privacy"]))) addedCalendar["privacy"] = req.body["privacy"];
-            if (req.body["dayOffset"]) addedCalendar["dayOffset"] = req.body["dayOffset"];
-
-            try{
-                const result = await addedCalendar.save();
-                res.status(201).json({message: "Calendar created successfully", data:result});
-            }   
-            catch (adderr){
-                res.status(500).json({message: "Internal Server Error", data:adderr});
-            }
-
+    router.post('/', async (req:Request, res:Response) => {
+        console.log("here!");
+        try {
+            // Validate req.body
+            if(!req.body || !req.body["ownedBy"]) {
+            res.status(400).json({ message: "Invalid request body / 'ownedBy' is required", data: {} });
         }
-        else{
-            res.status(400).json({message: "Request body missing", data: {}});
+        
+        // Validate and convert 'ownedBy' to ObjectId
+        const ownedBy = req.body["ownedBy"];
+        if (!isValidObjectId(ownedBy)) {
+            res.status(400).json({
+                message: "'ownedBy' must be a valid ObjectId.",
+                data: {},
+            });
+        }
+        
+        const owner_id = new Types.ObjectId(ownedBy);
+        
+        // Validate privacy
+        const privacy = req.body["privacy"];
+        if(privacy && !validPrivacy.includes(privacy)) {
+            res.status(400).json({ message: "Invalid privacy option", data: {} });
+        }
+        
+        var addedCalendar = new Calendar({
+            ownedBy: owner_id,
+            privacy: privacy || undefined,
+            dayOffset: req.body["dayOffset"] || undefined,
+        });
+        
+        const result = await addedCalendar.save();
+        res.status(201).json({ message: "Calendar created successfully", data: result});
+        } catch(err) {
+            res.status(500).json({ message: "Internal Service Error", data: err });
         }
     });
-
-    calendarIdRoute.get(async (req: Request, res:Response) => {
+    
+    router.get('/:id', async (req: Request, res:Response) => {
         const query = Calendar.find();
         const id = req.params["id"];
         try{
@@ -59,7 +72,7 @@ module.exports = function (router:Router) {
         }
     });
 
-    calendarIdRoute.delete(async (req: Request, res:Response) => {
+    router.delete('/:id', async (req: Request, res:Response) => {
         const query = Calendar.find();
         const id = req.params["id"];
         const u_id = new mongoose.Types.ObjectId(id);
@@ -84,5 +97,8 @@ module.exports = function (router:Router) {
             res.status(500).json({message:"Internal server error - FIND / DELETE", data:err});
         }
     });
+
     return router;
-}
+};
+
+export default calendarsRouter;
