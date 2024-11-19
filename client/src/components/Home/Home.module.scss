@@ -1,17 +1,32 @@
 .layout {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 .feed {
     width: 50%;
+    margin: 20px;
+}
+
+.feed h2 {
+    margin: 20px 0;
 }
 
 .diet {
+    display: flex;
+    flex-direction: column;
     width: 25%;
+    margin: 20px;
 }
 
-.notsure {
-    width: 25%;
+.diet h2 {
+    padding: 10px 0;
 }
+
+
+.popularCalDiv {
+    padding: 20px;
+    background-color:blanchedalmond;
+    margin: 10px 0;
+}   

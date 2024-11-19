@@ -44,6 +44,8 @@ export async function fetchCalendar(id: string): Promise<CalendarDetails | null>
     };
 }
 
+
+
 export async function fetchUser(email: string): Promise<User | null> {
     //TODO
     return {
@@ -60,3 +62,12 @@ export async function fetchUser(email: string): Promise<User | null> {
         dietsCreated: [],
     };
 }
+
+
+export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
+    return [
+        "id_1",
+        "id_2",
+        "id_3"
+    ]
+}   
