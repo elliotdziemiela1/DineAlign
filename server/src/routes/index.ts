@@ -4,6 +4,6 @@
 import { Express, Router } from 'express';
 
 module.exports = function (app:Express, router:Router) {
-    app.use('/api/users', require('./users.js')(router));
-
+    app.use('/api/users', require('./users.ts')(router));
+    app.use('/api/calendars',require('./calendars.ts')(router));
 };

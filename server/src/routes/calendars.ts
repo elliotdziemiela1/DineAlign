@@ -4,8 +4,8 @@ import mongoose from 'mongoose';
 
 module.exports = function (router:Router) {
     const validPrivacy = ["unlisted", "private", "public"];
-    const calendarRoute = router.route("/calendars");
-    const calendarIdRoute = router.route("/calendars/:id");
+    const calendarRoute = router.route("/");
+    const calendarIdRoute = router.route("/:id");
 
     calendarRoute.get(async (req: Request, res: Response) =>{
         const query = Calendar.find();

@@ -3,14 +3,16 @@ import User from "../models/user";
 import mongoose, { mongo } from 'mongoose';
 
 module.exports = function (router:Router) {
-    const usersRoute = router.route("/users");
-    const usersIdRoute = router.route("/users/:id");
+    const usersRoute = router.route("/");
+    const usersIdRoute = router.route("/:id");
 
 
     usersRoute.get(async (req: Request, res: Response) =>{
-        const query = User.find();
+        const query = User.find({});
         try{
+            // console.log("RESULT");
             const result = await query.exec();
+            // console.log("EXECTURED");
             res.status(200).json({message: "Valid response", data:result});
         }
         catch (err) {
@@ -43,15 +45,15 @@ module.exports = function (router:Router) {
                     }
                 }
                 else if (!result){
-                    res.status(500).json({message: "Internal Server Error - Find Duplicates", data: {}});
+                    res.status(500).json({message: "Internal Server Error - Find Duplicates - No Result", data: {}});
                 }
                 else {
-                    res.status(400).json({message: "Username already exists", data: {}});
+                    res.status(400).json({message: "Username already exists", data: result});
                 }
 
             }
             catch (err) {
-                res.status(500).json({message: "Internal Server Error - Find Duplicates", data: {}});
+                res.status(500).json({message: "Internal Server Error - Find Duplicates", data: err});
             }
         }
         else{
