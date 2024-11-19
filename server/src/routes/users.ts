@@ -53,20 +53,31 @@ const usersRouter = (router:Router) => {
     });
 
     router.get('/:id',async (req: Request, res: Response) => {
-        const id = req.params.id;
-
-        // Validate ID
-        if (!isValidObjectId(id)) {
-            res.status(400).json({ message: "Invalid user ID" });
-            return; // Stops execution of post
-        }
+        const id = req.params.id; // id is either id or email
 
         try {
-            const user = await User.findById(id);
-            if(!user) {
-                res.status(404).json({ message: "User not found" });
+            let user;
+
+            // if search by id
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                user = await User.findById(id);
+            }
+
+            // if search by email
+            else if (/\S+@\S+\.\S+/.test(id)) {
+                user = await User.findOne({ email: id });
+            }
+            // not a valid searchable id
+            else {
+                res.status(404).json({ message: "Invalid id or email" });
                 return; // Stops execution of post
             }
+
+            if (!user) {
+                res.status(404).json({ messege: "User not found" });
+                return;
+            }
+
             res.status(200).json({ message: "Valid response", data: user });
         } catch (err) {
             res.status(500).json({ message: "Internal Server Error", data: err });
@@ -74,16 +85,29 @@ const usersRouter = (router:Router) => {
     });
 
     router.delete('/:id', async (req: Request, res: Response) => {
-        const id = req.params["id"];
-
-        // check if ID is valid
-        if(!mongoose.Types.ObjectId.isValid(id)) {
-            res.status(400).json({ message: "Invalid user ID", data: {} });
-        }
+        const id = req.params.id;
+        
         try {
-            const result = await User.findByIdAndDelete(id);
-            if (result) res.status(200).json({ mesage: "User deleted", data: result });
-            else res.status(404).json({ message: "User not found", data:{} });
+            let result;
+            // Delete by ID
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                result = await User.findByIdAndDelete(id);
+            }
+
+            // Delete by email
+            else if (/\S+@\S+\.\S+/.test(id)) {
+                result = await User.findOneAndDelete({ email: id });
+            }
+            else {
+                res.status(400).json({ message: "Invalid id or email", data: {} });
+                return;
+            }
+
+            if (!result) {
+                res.status(404).json({ message: "User not found", data:{} });
+                return;
+            }
+            res.status(200).json({ mesage: "User deleted", data: result });
         } catch (err) {
             res.status(500).json({ message:"Internal server error - FIND / DELETE", data:err });
         }
