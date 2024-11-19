@@ -16,45 +16,39 @@ const usersRouter = (router:Router) => {
         }
     });
 
-    router.post('/', async (req:Request, res: Response) => {
-        if (req.body && (req.body["username"] && req.body["password"] && req.body["email"])){
-            try{
-                const query = User.find();
-                query.where({username: req.body["username"]});
-                const result = await query.exec();
-                if (result && result.length <= 0){
-                    var addedUser = new User();
-                    addedUser["username"] = req.body["username"];
-                    addedUser["password"] = req.body["password"];
-                    addedUser["email"] = req.body["email"];
-
-                    if (req.body["bio"]) addedUser["bio"] = req.body["bio"];
-                    if (req.body["age"]) addedUser["age"] = req.body["age"];
-                    if (req.body["gender"]) addedUser["gender"] = req.body["gender"];
-                    if (req.body["location"]) addedUser["location"] = req.body["location"];
-
-                    try{
-                        const result = await addedUser.save();
-                        res.status(201).json({message: `User "${req.body["username"]}" created`, data:result});
-                    }
-                    catch (adderr){
-                        res.status(500).json({message: "Internal server error - add user", data: adderr});
-                    }
-                }
-                else if (!result){
-                    res.status(500).json({message: "Internal Server Error - Find Duplicates - No Result", data: {}});
-                }
-                else {
-                    res.status(400).json({message: "Username or email already exists", data: result});
-                }
-
+    router.post('/', async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { username, password, email, bio, age, gender, location } = req.body;
+    
+            // Validate username, password, and email
+            if (!username || !password || !email) {
+                res.status(400).json({ message: "Username, password, and email are required", data: {} });
+                return;
             }
-            catch (err) {
-                res.status(500).json({message: "Internal Server Error - Find Duplicates", data: err});
+    
+            // Check for duplicates
+            const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+            if (existingUser) {
+                res.status(400).json({ message: "Username or email already exists", data: existingUser });
+                return;
             }
-        }
-        else{
-            res.status(400).json({message: "Missing request body", data: {}});
+    
+            // Create new user
+            const newUser = new User({
+                username,
+                password,
+                email,
+                bio,
+                age,
+                gender,
+                location,
+            });
+    
+            // Save user to database
+            const savedUser = await newUser.save();
+            res.status(201).json({ message: `User "${username}" created`, data: savedUser });
+        } catch (err) {
+            res.status(500).json({ message: "Internal Server Error", data: err });
         }
     });
 
