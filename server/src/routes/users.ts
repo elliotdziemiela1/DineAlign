@@ -21,7 +21,7 @@ module.exports = function (router:Router) {
     });
 
     usersRoute.post(async (req:Request, res: Response) => {
-        if (req.body && (req.body["username"] && req.body["password"])){
+        if (req.body && (req.body["username"] && req.body["password"] && req.body["email"])){
             try{
                 const query = User.find();
                 query.where({username: req.body["username"]});
@@ -30,6 +30,7 @@ module.exports = function (router:Router) {
                     var addedUser = new User();
                     addedUser["username"] = req.body["username"];
                     addedUser["password"] = req.body["password"];
+                    addedUser["email"] = req.body["email"];
 
                     if (req.body["bio"]) addedUser["bio"] = req.body["bio"];
                     if (req.body["age"]) addedUser["age"] = req.body["age"];
@@ -48,7 +49,7 @@ module.exports = function (router:Router) {
                     res.status(500).json({message: "Internal Server Error - Find Duplicates - No Result", data: {}});
                 }
                 else {
-                    res.status(400).json({message: "Username already exists", data: result});
+                    res.status(400).json({message: "Username or email already exists", data: result});
                 }
 
             }
