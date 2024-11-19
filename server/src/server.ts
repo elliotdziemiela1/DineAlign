@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import express from 'express'
 import dotenv from 'dotenv'
+import mongoose from 'mongoose';
 
-var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var router = express.Router();
 
@@ -14,6 +14,9 @@ const port = process.env.PORT;
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 })
+const uri = process.env.CONNECTION_URI;
+if (!uri){throw new Error("ERROR CONNNECTION UNDEFINED");}
+mongoose.connect(uri);
 
 // app.get('/api', (req: Request, res: Response) => {
 //   res.append('Access-Control-Allow-Origin', ['*']);
@@ -22,7 +25,7 @@ app.get('/', (req: Request, res: Response) => {
 //   res.json({message: "Hello API!"})
 // })
 
-var allowCrossDomain = function (req:Request, res:Response, next:NextFunction) {
+var allowCrossDomain = function (req:Request, res:Response, next:any) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
   res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
