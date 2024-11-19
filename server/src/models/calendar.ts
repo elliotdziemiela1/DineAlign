@@ -40,7 +40,7 @@ var calendarSchema = new mongoose.Schema ({
     },
     privacy: {
         type: String,
-        default: "unlisted"
+        default: "private"
     },
     ratings: {
         type: [],
