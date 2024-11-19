@@ -29,8 +29,8 @@ export default function SearchUsers () {
     <div className={styles.container}>
         <h1>Search Query: {query}</h1>
         <ul>
-            {sortedUsers.map((u) => 
-            <li>
+            {sortedUsers.map((u, idx) => 
+            <li key={idx}>
                 <div>
                     <h3>{u.name}</h3>
                     <Link to={`/users/${u.id}`}>View Profile</Link>

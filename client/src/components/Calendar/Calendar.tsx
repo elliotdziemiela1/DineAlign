@@ -91,7 +91,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             <h2>Creator: {calendar.owner}</h2>
             <div className={style.tags}>
                 <h3>Tags: </h3>
-                {calendar.tags.map(t => <p>{t}</p>)}
+                {calendar.tags.map((t, idx) => <p key={idx}>{t}</p>)}
             </div>
             <div className={style.shortFollowersList}>
                 <h3>Followers: </h3>
@@ -104,11 +104,11 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                 <h2>Creator: {calendar.owner}</h2>
                 <div className={style.followersList}>
                     <h3>Followers</h3>
-                    {calendar.followedBy.map(f => <p>{f}</p>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
+                    {calendar.followedBy.map((f, idx) => <p key={idx}>{f}</p>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
                 </div>
                 <div className={style.ratingsList}>
                     <h3>Ratings</h3>
-                    {calendar.ratings.map(r => <p>{r}</p>)}  {/* Assuming r is a ratingID, replace with api call to get r's details (maybe starts and description)*/}
+                    {calendar.ratings.map((r, idx) => <p key={idx}>{r}</p>)}  {/* Assuming r is a ratingID, replace with api call to get r's details (maybe starts and description)*/}
                 </div>
             </div>
             <div className={style.calendarBody}>

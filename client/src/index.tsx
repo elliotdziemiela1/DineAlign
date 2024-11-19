@@ -46,6 +46,7 @@ const router = createBrowserRouter(createRoutesFromElements([
     <Route path="/editor" element={<div>Not implemented.</div>}/>
     <Route path="/searchUsers/:query" element={<SearchUsers/>}/>
     <Route path="/searchDiets/:query" element={<SearchDiets/>}/>
+    <Route path="/profile/:id" element={<Profile/>}/>
     <Route path="/login" element={<Login/>}/>
   </Route>,
   <Route path="/*" element={<div>404 not found.</div>}/>

@@ -52,7 +52,7 @@ export async function fetchCalendar(id: string): Promise<CalendarDetails | null>
 export async function fetchUser(email: string): Promise<User | null> {
     //TODO
     return {
-        name: "John",
+        username: "John",
         followers: [],
         following: [],
         followsDiet: {
@@ -66,6 +66,12 @@ export async function fetchUser(email: string): Promise<User | null> {
     };
 }
 
+export async function fetchUserByID(id: string): Promise<User | null> {
+
+    const response = await axios.get(`${BASE_URL}/users/${id}`);
+
+    return response.data;
+}
 
 export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
     return [

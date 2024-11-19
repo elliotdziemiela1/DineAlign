@@ -3,11 +3,13 @@ import style from "./Profile.module.css"
 import defaultPfp from "./DefaultPFP.jpg"
 import Calendar from "../Calendar/Calendar"
 import { auth } from "../../services/auth";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { UserCredential } from "firebase/auth";
 import { AuthContext } from "../..";
+import { fetchUser, fetchUserByID } from "../../services/fetchData";
+
 export interface User {
-    name: string;
+    username: string;
     bio?: string;
     age?: string;
     sex?: string;
@@ -27,7 +29,7 @@ export interface DietDetails {
 }
 
 export const EmptyUser = {
-    name: "",
+    username: "",
     followers: [],
     following: [],
     completedDiets: 0,
@@ -37,24 +39,27 @@ export const EmptyUser = {
 export default function Profile() {
     
     const bruh = useContext(AuthContext);
-    console.log(bruh);
+    // console.log(bruh);
     
-    //Replace with EmptyUser later
-    const [user, setUser] = useState<User>({
-        name: "John",
-        followers: [],
-        following: [],
-        followsDiet: {
-            diet: "test",
-            dietStarted: new Date('11-16-2024'),
-            daysCompleted: [],
-            repeating: false,
-        },
-        completedDiets: 0,
-        dietsCreated: ["cal1", "cal2", "cal3"],
-    });
+    const { id } = useParams();
 
-    
+    //Replace with EmptyUser later
+    const [user, setUser] = useState<User>(EmptyUser);
+
+    useEffect(()=>{
+        async function fetcher(){
+            console.log(id)
+            if (!!id){
+                const u = await fetchUserByID(id);
+                console.log("user: " + {u});
+                if (u != null){
+                    setUser(u);
+                    console.log("set user")
+                }
+            }
+        }
+        fetcher();
+    }, [])
 
     return (
         <div className={style.container}>
@@ -67,27 +72,27 @@ export default function Profile() {
 
             {/* <!-- User Info Section --> */}
             <div className={style.userInfo}>
-                <h1>{user.name}</h1>
+                <h1>{user.username}</h1>
                 <p>{user.bio ?? "No bio specified."}</p>
             </div>
             <div className={style.mainContent}>
                 <div className={style.dietContent}>
                     {/* <!-- Diet Section --> */}
                     <div className={style.currentDietSection}>
-                        <h2>{user.name}'s Current Diet</h2>
+                        <h2>{user.username}'s Current Diet</h2>
                         <div className={style.currentDiet}>
                             <Calendar user={user} calendarId={user.followsDiet?.diet ?? ''}/>
                         </div>
                     </div>
 
                     <div className={style.createdDietsSection}>
-                        <h2>{user.name}'s Created Diets</h2>
-                        <div className={style.createdDiets}>
+                        <h2>{user.username}'s Created Diets</h2>
+                        {/* <div className={style.createdDiets}>
                             {user.dietsCreated.map(d => {
                                 return <div className={style.createdDiet}>
                                 <Calendar user={null} calendarId={d} />
                                 </div>})}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
