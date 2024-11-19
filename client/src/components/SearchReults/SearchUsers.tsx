@@ -1,21 +1,43 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { User } from "../Profile/Profile";
-// import { fetchAllUserIDs } from "../../services/fetchData";
+import { fetchAllUserNamesAndIDs } from "../../services/fetchData";
+import styles from "./SearchUsers.module.scss"
+
+export interface ShortUserDetails {
+    id : string;
+    name: string;
+}
 
 export default function SearchUsers () {
     const { query } = useParams();
-    const [allUsers, setAllUsers] = useState();
+    const [allUserNamesAndIDs, setAllUserNamesAndIDs] = useState<ShortUserDetails []>([]);
 
     useEffect(() => {
-        async function fetchUsers () {
-
+        async function fetcher () {
+            const result = await fetchAllUserNamesAndIDs();
+            if (result != null){
+                setAllUserNamesAndIDs(result);
+            }
         }
+        fetcher();
     }, []);
 
+    const sortedUsers = allUserNamesAndIDs.filter((user) => user.name.toLowerCase().includes(query.toLowerCase()))
+
     return (
-    <div>
-        <h1>{query}</h1>
+    <div className={styles.container}>
+        <h1>Search Query: {query}</h1>
+        <ul>
+            {sortedUsers.map((u) => 
+            <li>
+                <div>
+                    <h3>{u.name}</h3>
+                    <Link to={`/users/${u.id}`}>View Profile</Link>
+                </div>
+            </li>)}
+        </ul>
+        
     </div>
     )
 }

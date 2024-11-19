@@ -1,6 +1,9 @@
 import { CalendarDetails, Privacy } from "../components/Calendar/Calendar";
 import { EmptyUser, User } from "../components/Profile/Profile";
+import { ShortUserDetails } from "../components/SearchReults/SearchUsers"
+import axios from "axios";
 
+const BASE_URL = "http://localhost:5050/api"
 
 export async function fetchCalendar(id: string): Promise<CalendarDetails | null> {
     //TODO
@@ -72,3 +75,17 @@ export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
     ]
 }   
 
+export async function fetchAllUserNamesAndIDs(): Promise<ShortUserDetails[] | null> {
+    return [
+        {id: "id_1",
+            name: "joe"},
+        {id: "id_2",
+            name: "alex"},
+        {id: "id_3",
+            name: "arthur"},
+        {id: "id_4",
+            name: "owen"},
+        {id: "id_5",
+            name: "kari"},
+    ]
+}   
