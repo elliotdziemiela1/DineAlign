@@ -1,9 +1,16 @@
 /*
  * Connect all of your endpoints together here.
  */
-import { Express, Router } from 'express';
+import express, { Application, Router } from 'express';
+import usersRouter from './users'; // Import the users router
+import calendarsRouter from './calendars'; // Import the calendars router
 
-module.exports = function (app:Express, router:Router) {
-    app.use('/api/users', require('./users.ts')(router));
-    app.use('/api/calendars',require('./calendars.ts')(router));
+module.exports = function (app: Application) {
+    // Create separate router instances
+    const userRouter = Router();
+    const calendarRouter = Router();
+
+    // Mount the routers on distinct API paths
+    app.use('/api/users', usersRouter(userRouter));
+    app.use('/api/calendars', calendarsRouter(calendarRouter));
 };
