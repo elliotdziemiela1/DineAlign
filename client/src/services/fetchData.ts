@@ -1,6 +1,5 @@
 import { CalendarDetails, Privacy } from "../components/Calendar/Calendar";
 import { EmptyUser, User } from "../components/Profile/Profile";
-import { ShortUserDetails } from "../components/SearchReults/SearchUsers"
 import axios from "axios";
 
 export async function fetchCalendar(id: string): Promise<CalendarDetails | null> {
@@ -77,7 +76,7 @@ export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
     ]
 }   
 
-export async function fetchAllUsers(): Promise<ShortUserDetails[] | null> {
+export async function fetchAllUsers(): Promise<User[] | null> {
     const response = await axios.get(`/api/users`)
     // const data = response.data.select()
     console.log(response.data.data)
