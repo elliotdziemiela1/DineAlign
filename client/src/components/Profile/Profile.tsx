@@ -51,16 +51,17 @@ export default function Profile() {
             console.log(id)
             if (!!id){
                 const u = await fetchUserByID(id);
-                console.log("user: " + {u});
+                console.log("user: " + u);
+                console.log(`set user ${u?.username}`)
                 if (u != null){
                     setUser(u);
-                    console.log("set user")
                 }
             }
         }
         fetcher();
     }, [])
 
+    
     return (
         <div className={style.container}>
             {/* <!-- Cover Photo and Profile Picture --> */}

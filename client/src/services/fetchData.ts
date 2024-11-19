@@ -69,8 +69,7 @@ export async function fetchUser(email: string): Promise<User | null> {
 export async function fetchUserByID(id: string): Promise<User | null> {
 
     const response = await axios.get(`${BASE_URL}/users/${id}`);
-
-    return response.data;
+    return response.data.data;
 }
 
 export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
