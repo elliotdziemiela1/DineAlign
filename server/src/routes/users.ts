@@ -61,7 +61,7 @@ module.exports = function (router:Router) {
         }
     });
 
-    usersIdRoute.get(async (req: Request, res:Response) => {
+    usersIdRoute.get(async (req: Request, res: Response) => {
         const query = User.find();
         const id = req.params["id"];
         const u_id = new mongoose.Types.ObjectId(id);
@@ -80,30 +80,21 @@ module.exports = function (router:Router) {
         }
     });
 
-    usersIdRoute.delete(async (req: Request, res:Response) => {
-        const query = User.find();
+    usersIdRoute.delete(async (req: Request, res: Response) => {
         const id = req.params["id"];
-        const u_id = new mongoose.Types.ObjectId(id);
-        query.where({_id: u_id});
-        try{
-            const result = await query.exec();
-            if (result && result.length > 0){
-                try{
-                    
-                    const deleteRes = User.deleteOne({_id: u_id});
-                    res.status(200).json({message: "User deleted successfully", data:deleteRes});
-                }
-                catch (deleterr){
-                    res.status(500).json({message:"Internal server error - DELETE", data:deleterr});
-                }
-            }
-            else{
-                res.status(404).json({message: "User not found", data:{}})
-            }
+
+        // check if ID is valid
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).json({ message: "Invalid user ID", data: {} });
         }
-        catch (err) {
-            res.status(500).json({message:"Internal server error - FIND / DELETE", data:err});
+        try {
+            const result = await User.findByIdAndDelete(id);
+            if (result) res.status(200).json({ mesage: "User deleted", data: result });
+            else res.status(404).json({ message: "User not found", data:{} });
+        } catch (err) {
+            res.status(500).json({ message:"Internal server error - FIND / DELETE", data:err });
         }
     });
+
     return router;
 }
