@@ -77,12 +77,45 @@ const calendarsRouter = (router:Router) => {
         }
     });
 
+    router.put('/:id', async (req: Request, res: Response) => {
+        const id = req.params.id;
+        const updates = req.body;
+
+        // Validate ID
+        if(!isValidObjectId(id)) {
+            res.status(400).json({ message: "Invalid calendar ID", data: {} });
+            return;
+        }
+        
+        try {
+            let calendar = await Calendar.findById(id);
+            if(!calendar) {
+                res.status(404).json({ message: "Calendar not found" });
+                return; // Stops execution of post
+            }
+
+            // Update all calendar attributes slated in updates
+            Object.keys(updates).forEach((key) => {
+                if(key in calendar && updates[key] !== undefined) {
+                    calendar[key] = updates[key]; // ignore error
+                }
+            });
+
+            // save updated calendar
+            const updatedCalendar = await calendar.save();
+            res.status(200).json({ message: "Calendar updated", data: updatedCalendar });
+        } catch (err) {
+            res.status(500).json({ message:"Internal server error - FIND / DELETE", data:err });
+        }
+    });
+
     router.delete('/:id', async (req: Request, res: Response) => {
         const id = req.params["id"];
 
         // check if ID is valid
         if(!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).json({ message: "Invalid calendar ID", data: {} });
+            return;
         }
         try {
             const result = await Calendar.findByIdAndDelete(id);
