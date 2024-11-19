@@ -18,7 +18,6 @@ const calendarsRouter = (router:Router) => {
     });
 
     router.post('/', async (req:Request, res:Response) => {
-        console.log("here!");
         try {
             // Validate req.body
             if(!req.body || !req.body["ownedBy"]) {
@@ -32,6 +31,7 @@ const calendarsRouter = (router:Router) => {
                 message: "'ownedBy' must be a valid ObjectId.",
                 data: {},
             });
+            return; // Stops execution of post
         }
         
         const owner_id = new Types.ObjectId(ownedBy);
@@ -40,6 +40,7 @@ const calendarsRouter = (router:Router) => {
         const privacy = req.body["privacy"];
         if(privacy && !validPrivacy.includes(privacy)) {
             res.status(400).json({ message: "Invalid privacy option", data: {} });
+            return; // Stops execution of post
         }
         
         var addedCalendar = new Calendar({
@@ -72,29 +73,19 @@ const calendarsRouter = (router:Router) => {
         }
     });
 
-    router.delete('/:id', async (req: Request, res:Response) => {
-        const query = Calendar.find();
+    router.delete('/:id', async (req: Request, res: Response) => {
         const id = req.params["id"];
-        const u_id = new mongoose.Types.ObjectId(id);
-        query.where({_id: u_id});
-        try{
-            const result = await query.exec();
-            if (result && result.length > 0){
-                try{
-                    
-                    const deleteRes = Calendar.deleteOne({_id: u_id});
-                    res.status(200).json({message: "Calendar deleted successfully", data:deleteRes});
-                }
-                catch (deleterr){
-                    res.status(500).json({message:"Internal server error - DELETE", data:deleterr});
-                }
-            }
-            else{
-                res.status(404).json({message: "Calendar not found", data:{}})
-            }
+
+        // check if ID is valid
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).json({ message: "Invalid calendar ID", data: {} });
         }
-        catch (err) {
-            res.status(500).json({message:"Internal server error - FIND / DELETE", data:err});
+        try {
+            const result = await Calendar.findByIdAndDelete(id);
+            if (result) res.status(200).json({ mesage: "Calendar deleted", data: result });
+            else res.status(404).json({ message: "Calendar not found", data:{} });
+        } catch (err) {
+            res.status(500).json({ message:"Internal server error - FIND / DELETE", data:err });
         }
     });
 
