@@ -120,7 +120,6 @@ const usersRouter = (router:Router) => {
             
             // save updated user
             const updatedUser = await user.save();
-
             res.status(200).json({ message: "User updated", data: updatedUser });
         } catch (err) {
             res.status(500).json({ message: "Internal Server Error", data: err });
