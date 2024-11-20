@@ -1,5 +1,24 @@
 import mongoose from 'mongoose';
 
+var DietDetails = new mongoose.Schema ({
+    diet: {
+        type:String,
+        default:""
+    },
+    dietStarted: {
+        type:Date,
+        default: Date()
+    },
+    daysCompleted: {
+        type:[Boolean],
+        default:[false]
+    },
+    repeating: {
+        type:Boolean,
+        default:false
+
+    }
+})
 
 var UserSchema = new mongoose.Schema ({
     username: {
@@ -39,7 +58,7 @@ var UserSchema = new mongoose.Schema ({
         default: []
     },
     followsDiet : {
-        type: mongoose.Schema.Types.ObjectId,
+        type: DietDetails,
         default: null
     },
     dietsCompleted: {

@@ -6,7 +6,7 @@ import { auth } from "../../services/auth";
 import { Navigate, useParams } from "react-router-dom";
 import { UserCredential } from "firebase/auth";
 import { AuthContext } from "../..";
-import { fetchUser, fetchUserByID } from "../../services/fetchData";
+import { fetchUserByEmail, fetchUserByID } from "../../services/fetchData";
 
 export interface User {
     _id?: string;
@@ -20,6 +20,7 @@ export interface User {
     followsDiet?: DietDetails;
     completedDiets: number;
     dietsCreated: string[];
+    email?: string;
 }
 
 export interface DietDetails {
@@ -39,23 +40,29 @@ export const EmptyUser = {
 
 export default function Profile() {
     
-    const bruh = useContext(AuthContext);
+    const context = useContext(AuthContext);
     // console.log(bruh);
     
     const { id } = useParams();
+
 
     //Replace with EmptyUser later
     const [user, setUser] = useState<User>(EmptyUser);
 
     useEffect(()=>{
         async function fetcher(){
-            console.log(id)
+            // console.log(id)
             if (!!id){
                 const u = await fetchUserByID(id);
-                console.log("user: " + u);
-                console.log(`set user ${u?.username}`)
                 if (u != null){
                     setUser(u);
+                }
+            } else {
+                if (context.user?.email){
+                    const u = await fetchUserByEmail(context.user.email);
+                    if (u != null){
+                        setUser(u);
+                    }
                 }
             }
         }
@@ -83,18 +90,24 @@ export default function Profile() {
                     <div className={style.currentDietSection}>
                         <h2>{user.username}'s Current Diet</h2>
                         <div className={style.currentDiet}>
-                            <Calendar user={user} calendarId={user.followsDiet?.diet ?? ''}/>
+                        {user.followsDiet?.diet ? (
+                                <>
+                                    <Calendar user={user} calendarId={user.followsDiet.diet} />
+                                </>
+                            ) : (
+                                <p>Loading...</p>
+                            )}
                         </div>
                     </div>
 
                     <div className={style.createdDietsSection}>
                         <h2>{user.username}'s Created Diets</h2>
-                        {/* <div className={style.createdDiets}>
+                        <div className={style.createdDiets}>
                             {user.dietsCreated.map(d => {
                                 return <div className={style.createdDiet}>
                                 <Calendar user={null} calendarId={d} />
                                 </div>})}
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </div>
