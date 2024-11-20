@@ -34,8 +34,7 @@ export async function fetchUserByID(id: string): Promise<User | null> {
 
 export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
     return [
-        "673cfc415f4cb88b22890a13",
-        "673c0b8fe80af8f5bbd56417"
+        "673e5472da0c24f56d30eaa7"
     ]
 }   
 
