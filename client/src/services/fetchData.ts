@@ -63,9 +63,19 @@ export async function fetchUser(email: string): Promise<User | null> {
     };
 }
 
+function parseDates(user: User): User {
+    if (user?.followsDiet?.dietStarted) {
+        user.followsDiet.dietStarted = new Date(user.followsDiet.dietStarted);
+    }
+    
+    return user;
+}
+
 export async function fetchUserByID(id: string): Promise<User | null> {
     const response = await axios.get(`/api/users/${id}`);
-    return response.data.data;
+    const user: User | null = response.data.data;
+
+    return user ? parseDates(user) : null;
 }
 
 export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
