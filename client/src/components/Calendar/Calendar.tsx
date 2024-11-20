@@ -40,9 +40,9 @@ export function showCurrentDay(startDate: Date, days: CalendarDay[]): React.JSX.
     const currentTime = new Date();
     const baseDay = getEnumFromDate(startDate);
     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
-    const currentDay = days[currentDayIndex];
+    const currentDay = days[currentDayIndex % days.length];
     return (
-        <CurrentDay index={currentDayIndex} dayOfWeek={getDayOfWeek((baseDay + currentDayIndex) % 7)} day={currentDay}/>
+        <CurrentDay index={currentDayIndex % days.length} dayOfWeek={getDayOfWeek((baseDay + currentDayIndex) % 7)} day={currentDay}/>
     )
 }
 
