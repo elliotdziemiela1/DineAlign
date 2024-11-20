@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../..";
 import styles from "./Home.module.scss";
 import { EmptyUser, User } from "../Profile/Profile";
-import { fetchCalendar, fetchUser, fetchPopularCalendarIDs } from "../../services/fetchData";
+import { fetchCalendar, fetchUserByID, fetchPopularCalendarIDs, fetchUserByEmail } from "../../services/fetchData";
 import { CalendarDetails, showCurrentDay } from "../Calendar/Calendar";
 import Calendar from "../Calendar/Calendar";
 
@@ -31,8 +31,11 @@ export default function Home() {
 
     useEffect(() => {
         async function fetcher() {
+            console.log("Home fetcher")
+            console.log(userDetails.user?.email)
             if (!!userDetails.user?.email) {
-                const result = await fetchUser(userDetails.user?.email);
+                const result = await fetchUserByEmail(userDetails.user?.email);
+                console.log(result)
                 if (result !== null && !!result.followsDiet) {
                     const calendarResult = await fetchCalendar(result.followsDiet.diet as string);
                     setCalendar(calendarResult);

@@ -3,7 +3,7 @@ import style from './Calendar.module.scss'
 import Day, { CurrentDay, DetailedDay } from './Day'
 import { User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
-import { fetchCalendar, fetchUser } from "../../services/fetchData";
+import { fetchCalendar, fetchUserByEmail } from "../../services/fetchData";
 
 export interface Meal {
     time: string;
