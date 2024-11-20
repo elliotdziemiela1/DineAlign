@@ -12,25 +12,10 @@ export async function fetchCalendar(id: string): Promise<CalendarDetails | null>
 
 export async function fetchUserByEmail(email: string): Promise<User | null> {
     const users = await fetchAllUsers();
-    console.log("FETCH BY EMAIL")
-    console.log(users)
     const user = users?.find((item) => item.email == email)
-    console.log(user)
-    return user ?? null;
-    // return {
-    //     username: "John",
-    //     followers: [],
-    //     following: [],
-    //     followsDiet: {
-    //         diet: "",
-    //         dietStarted: new Date('11-16-2024'),
-    //         daysCompleted: [],
-    //         repeating: false,
-    //     },
-    //     completedDiets: 0,
-    //     dietsCreated: [],
-    // };
+    return user ? parseDates(user) : null;
 }
+
 
 function parseDates(user: User): User {
     if (user?.followsDiet?.dietStarted) {

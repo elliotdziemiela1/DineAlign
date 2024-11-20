@@ -92,7 +92,6 @@ export default function Profile() {
                         <div className={style.currentDiet}>
                         {user.followsDiet?.diet ? (
                                 <>
-                                    <p>{user.followsDiet.diet}</p>
                                     <Calendar user={user} calendarId={user.followsDiet.diet} />
                                 </>
                             ) : (
