@@ -19,11 +19,13 @@ var mealSchema = new mongoose.Schema({
 })
 
 var daySchema = new mongoose.Schema ({
-    days: {
+    day: {
         type: String,
+        default: "1"
     },
-    mealEntry: {
-        type: mealSchema
+    mealEntries: {
+        type: [mealSchema],
+        default: [{timeOfDay: "morning", mealName: "breakfast", desription:"most important meal of the day"}]
     }
 
 });
@@ -34,7 +36,7 @@ var calendarSchema = new mongoose.Schema ({
         type:[String],
         default:[]
     },
-    ownedBy: {
+    owner: {
         type: mongoose.Schema.Types.ObjectId,
         default: null
     },
@@ -50,9 +52,9 @@ var calendarSchema = new mongoose.Schema ({
         type: Number,
         default: 0
     },
-    planDays: {
+    days: {
         type: [daySchema],
-        default: []
+        default: [{day: "1"},{day: "2"},{day: "3"},{day: "4"},{day: "5"},{day: "6"},{day: "7"}]
     }
 
 });

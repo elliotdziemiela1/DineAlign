@@ -60,7 +60,7 @@ export function showCurrentDay(startDate: Date, days: CalendarDay[]): React.JSX.
  * from the backend
  * @param id - String id of the calendar
  */
-export default function Calendar({ user, calendarId }: {user: User | null, calendarId: string}) {
+export default function Calendar({ user, calendarId }: {user: User | null, calendarId: string | undefined}) {
     const [dayDetails, setDayDetails] = useState<DayDetails>({isOpen: false, index: -1});
     const [calendar, setCalendar] = useState<CalendarDetails>({
         //It is important that days MUST ALWAYS BE SORTED in ascending day number order
@@ -77,23 +77,20 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     // const [days, setDays] = useState<CalendarDay[]>([]);
     
     useEffect(()=>{
-        // setCalendar(c => {return {...c, days: dietDays}});
         async function fetchCal(){
-            let cal = await fetchCalendar(calendarId);
-            if (cal !== null) {
-                setCalendar(cal);
+            if (calendarId){
+                let cal = await fetchCalendar(calendarId);
+                if (cal !== null) {
+                    setCalendar(cal);
+                }
             }
         }
         fetchCal();
-    }, [calendarId]);
+    }, []);
 
     const startDate = user?.followsDiet?.dietStarted ?? new Date();
-    // console.log(user?.username)
-    // console.log(user?.followsDiet?.dietStarted)
-    // console.log(typeof user?.followsDiet?.dietStarted)
     const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
     const currentTime = new Date();
-    console.log(currentTime, startDate);
     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
 
 

@@ -49,11 +49,11 @@ export default function Profile() {
 
     useEffect(()=>{
         async function fetcher(){
-            console.log(id)
+            // console.log(id)
             if (!!id){
                 const u = await fetchUserByID(id);
-                console.log("user: " + u);
-                console.log(`set user ${u?.username}`)
+                // console.log("user: " + u);
+                // console.log(`set user ${u?.username}`)
                 if (u != null){
                     setUser(u);
                 }
@@ -83,7 +83,14 @@ export default function Profile() {
                     <div className={style.currentDietSection}>
                         <h2>{user.username}'s Current Diet</h2>
                         <div className={style.currentDiet}>
-                            <Calendar user={user} calendarId={user.followsDiet?.diet ?? ''}/>
+                        {user.followsDiet?.diet ? (
+                                <>
+                                    <p>{user.followsDiet.diet}</p>
+                                    <Calendar user={user} calendarId={user.followsDiet.diet} />
+                                </>
+                            ) : (
+                                <p>Loading...</p>
+                            )}
                         </div>
                     </div>
 
