@@ -37,9 +37,18 @@ export interface DayDetails {
 }
 
 export function showCurrentDay(startDate: Date, days: CalendarDay[]): React.JSX.Element {
+    if (!!startDate){
+        startDate = new Date();
+    }
+    if (!days){
+        return <p>Followed Calendar has no days</p>
+    }
     const currentTime = new Date();
     const baseDay = getEnumFromDate(startDate);
     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
+    if (days.length < (currentDayIndex+1)){
+        return <p>Current day doesn't have an entry in your followed calendar</p>
+    }
     const currentDay = days[currentDayIndex];
     return (
         <CurrentDay index={currentDayIndex} dayOfWeek={getDayOfWeek((baseDay + currentDayIndex) % 7)} day={currentDay}/>
@@ -79,6 +88,9 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     }, [calendarId]);
 
     const startDate = user?.followsDiet?.dietStarted ?? new Date();
+    // console.log(user?.username)
+    // console.log(user?.followsDiet?.dietStarted)
+    // console.log(typeof user?.followsDiet?.dietStarted)
     const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
     const currentTime = new Date();
     console.log(currentTime, startDate);
@@ -91,11 +103,11 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             <h2>Creator: {calendar.owner}</h2>
             <div className={style.tags}>
                 <h3>Tags: </h3>
-                {calendar.tags.map((t, idx) => <p key={idx}>{t}</p>)}
+                {calendar.tags?.map((t, idx) => <p key={idx}>{t}</p>)}
             </div>
             <div className={style.shortFollowersList}>
                 <h3>Followers: </h3>
-                {calendar.followedBy.map((f, idx) => idx < 3 && <p>{f}</p>)}
+                {calendar.followedBy?.map((f, idx) => idx < 3 && <p>{f}</p>)}
                 <button onClick={() => setListOpen(true)}>View all followers and ratings</button>
             </div>
 
@@ -104,15 +116,15 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                 <h2>Creator: {calendar.owner}</h2>
                 <div className={style.followersList}>
                     <h3>Followers</h3>
-                    {calendar.followedBy.map((f, idx) => <p key={idx}>{f}</p>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
+                    {calendar.followedBy?.map((f, idx) => <p key={idx}>{f}</p>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
                 </div>
                 <div className={style.ratingsList}>
                     <h3>Ratings</h3>
-                    {calendar.ratings.map((r, idx) => <p key={idx}>{r}</p>)}  {/* Assuming r is a ratingID, replace with api call to get r's details (maybe starts and description)*/}
+                    {calendar.ratings?.map((r, idx) => <p key={idx}>{r}</p>)}  {/* Assuming r is a ratingID, replace with api call to get r's details (maybe starts and description)*/}
                 </div>
             </div>
             <div className={style.calendarBody}>
-                {calendar.days.map((day, idx) => 
+                {calendar.days?.map((day, idx) => 
                     <Day index={idx} key={idx} dayOfWeek={getDayOfWeek((baseDay + idx) % 7)} highlighted={user !== null && currentDayIndex === idx}
                         descriptor={day.descriptor ?? "No overview provided."} openModal={setDayDetails}/>
                 )}
