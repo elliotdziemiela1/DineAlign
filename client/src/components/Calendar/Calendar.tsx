@@ -18,6 +18,7 @@ export interface CalendarDay {
 
 export interface DayWithIndex {
     index: number;
+    user: User;
     descriptor: string;
     mealEntries: Meal[];
 }

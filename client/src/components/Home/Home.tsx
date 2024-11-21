@@ -45,6 +45,7 @@ export default function Home() {
                             {feed.feed.map((item, idx) => {
                                 return (
                                     <div className={`${styles.day}`} key={idx}>
+                                        <p>{`User: ${item.user.username}`}</p>
                                         <p>{`Day ${item.index + 1}`}</p>
                                         <p>{getDayOfWeek(new Date())}</p>
                                         <p>{item?.descriptor ?? "No overview provided."}</p>
@@ -126,7 +127,7 @@ export default function Home() {
                     //Store user's current day into the feed
                     const currentTime = new Date();
                     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(result.followsDiet?.dietStarted.getTime() / 86400000) * 86400000)) / 86400000);
-                    return {index: currentDayIndex % calendarResult.days.length, ...calendarResult.days[currentDayIndex % calendarResult.days.length]};
+                    return {index: currentDayIndex % calendarResult.days.length, user: result, ...calendarResult.days[currentDayIndex % calendarResult.days.length]};
                 }
             }
             return null;
