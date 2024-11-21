@@ -27,7 +27,11 @@ var daySchema = new mongoose.Schema ({
     mealEntries: {
         type: [mealSchema],
         default: [{time: "morning", name: "breakfast", 
-            description:"most important meal of the day", link: "https://www.the-girl-who-ate-everything.com/bacon-egg-and-potato-breakfast-skillet/"}]
+            description:"Skillet for breakfast", link: "https://www.the-girl-who-ate-everything.com/bacon-egg-and-potato-breakfast-skillet/"},
+            {time: "noon", name: "Lunch", 
+                description:"Just a snack for lunch", link: ""},
+            {time: "evening", name: "Dinner", 
+                description:"Grilled Chicken Salad for dinner", link: "https://www.the-girl-who-ate-everything.com/bacon-egg-and-potato-breakfast-skillet/"}]
     }
 
 });
