@@ -77,7 +77,7 @@ export async function signOut() {
 // Once the auth state has resolved, loading will be false, and the final component will be loaded
 export function Authorize({ component }: {component: React.JSX.Element}) {
     const user = useContext(AuthContext);
-    console.log(user, auth.currentUser, auth);
+    console.log("Authorizing user:", user);
     if (user.user === null && user.loading === false) {
         return (
             <Navigate to="/login"/>

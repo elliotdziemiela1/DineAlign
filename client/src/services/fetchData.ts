@@ -3,16 +3,23 @@ import { EmptyUser, User } from "../components/Profile/Profile";
 import axios from "axios";
 
 export async function fetchCalendar(id: string): Promise<CalendarDetails | null> {
-    const response = await axios.get(`/api/calendars/${id}`);
-    const data : CalendarDetails | null = response.data.data;
-    return data;
+    try {
+        const response = await axios.get(`/api/calendars/${id}`);
+        const data : CalendarDetails | null = response.data.data;
+        console.log("Trying to fetch calendar:", data);
+        return data;
+    } catch (err: unknown) {
+        console.log("Error while fetching calendar:", err);
+        return null;
+    }
+    
 }
 
 
 
 export async function fetchUserByEmail(email: string): Promise<User | null> {
     const users = await fetchAllUsers();
-    const user = users?.find((item) => item.email == email)
+    const user = users?.find((item) => item.email === email)
     return user ? parseDates(user) : null;
 }
 

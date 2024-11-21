@@ -48,15 +48,19 @@ var calendarSchema = new mongoose.Schema ({
         type: [],
         default: []
     },
-    dayOffset: {
-        type: Number,
-        default: 0
-    },
     days: {
         type: [daySchema],
         default: [{day: "1"},{day: "2"},{day: "3"},{day: "4"},{day: "5"},{day: "6"},{day: "7"}]
+    },
+    name: {
+        type: String,
+        default: "",
+        required: true,
+    },
+    description: {
+        type: String,
+        default: "",
     }
-
 });
 
 const Calendar = mongoose.model('Calendar', calendarSchema);

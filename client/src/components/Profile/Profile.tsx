@@ -40,34 +40,32 @@ export const EmptyUser = {
 
 export default function Profile() {
     
-    const context = useContext(AuthContext);
-    // console.log(bruh);
-    
+    const currentUser = useContext(AuthContext);
     const { id } = useParams();
-
+    console.log("Profile's current user is:", currentUser, "or id:", id);
 
     //Replace with EmptyUser later
     const [user, setUser] = useState<User>(EmptyUser);
 
     useEffect(()=>{
-        async function fetcher(){
-            // console.log(id)
-            if (!!id){
-                const u = await fetchUserByID(id);
-                if (u != null){
-                    setUser(u);
+        async function fetcher() {
+            if (!!id) {
+                const result = await fetchUserByID(id);
+                if (result != null) {
+                    setUser(result);
                 }
             } else {
-                if (context.user?.email){
-                    const u = await fetchUserByEmail(context.user.email);
-                    if (u != null){
+                if (currentUser.user?.email) {
+                    const u = await fetchUserByEmail(currentUser.user.email);
+                    if (u != null) {
+                        console.log("Fetched user by email ", currentUser.user?.email, ":", u);
                         setUser(u);
                     }
                 }
             }
         }
         fetcher();
-    }, [])
+    }, [id, currentUser]);
 
     
     return (
