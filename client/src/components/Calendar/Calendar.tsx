@@ -16,6 +16,12 @@ export interface CalendarDay {
     mealEntries: Meal[];
 }
 
+export interface DayWithIndex {
+    index: number;
+    descriptor: string;
+    mealEntries: Meal[];
+}
+
 export enum Privacy {
     PRIVATE = 0,
     UNLISTED = 1,
