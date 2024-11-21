@@ -1,31 +1,33 @@
 import mongoose from 'mongoose';
 
 var mealSchema = new mongoose.Schema({
-    timeOfDay: {
+    time: {
         type:String,
+        default: "breakfast"
     },
-    mealName: {
+    name: {
         type: String,
         default:"Unnamed Meal"
     },
     description: {
         type: String,
-        default:""
+        default:"Most important meal of the day"
     },
     link : {
         type: String,
-        default: ""
+        default: "https://www.the-girl-who-ate-everything.com/bacon-egg-and-potato-breakfast-skillet/"
     }
 })
 
 var daySchema = new mongoose.Schema ({
-    day: {
+    descriptor: {
         type: String,
-        default: "1"
+        default: "This is a healthy day"
     },
     mealEntries: {
         type: [mealSchema],
-        default: [{timeOfDay: "morning", mealName: "breakfast", desription:"most important meal of the day"}]
+        default: [{time: "morning", name: "breakfast", 
+            description:"most important meal of the day", link: "https://www.the-girl-who-ate-everything.com/bacon-egg-and-potato-breakfast-skillet/"}]
     }
 
 });
@@ -50,7 +52,7 @@ var calendarSchema = new mongoose.Schema ({
     },
     days: {
         type: [daySchema],
-        default: [{day: "1"},{day: "2"},{day: "3"},{day: "4"},{day: "5"},{day: "6"},{day: "7"}]
+        default: [{descriptor: "1"},{descriptor: "2"},{descriptor: "3"},{descriptor: "4"},{descriptor: "5"},{descriptor: "6"},{descriptor: "7"}]
     },
     name: {
         type: String,
@@ -59,7 +61,7 @@ var calendarSchema = new mongoose.Schema ({
     },
     description: {
         type: String,
-        default: "",
+        default: "Example Calendar description",
     }
 });
 

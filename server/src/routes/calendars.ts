@@ -47,6 +47,7 @@ const calendarsRouter = (router:Router) => {
             ownedBy: owner_id,
             privacy: privacy || undefined,
             dayOffset: req.body["dayOffset"] || undefined,
+            name: req.body["name"]
         });
         
         const result = await addedCalendar.save();

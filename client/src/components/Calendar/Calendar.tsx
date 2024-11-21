@@ -109,6 +109,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
 
     return (
         <div className={style.calendar}>
+            <h1>{calendar.name}</h1>
             <h2>Creator: {owner?.username ?? "No owner"}</h2>
             <div className={style.tags}>
                 <h3>Tags: </h3>
