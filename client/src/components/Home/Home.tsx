@@ -10,7 +10,7 @@ export default function Home() {
     function showDiet() {
         if (userDetails.loading) {
             return (<div>Loading...</div>);
-        } else if (!userDetails.loading && userDetails.user === null) {
+        } else if (userDetails.user === null) {
             return (<div>Login to see your current diet!</div>);
         } else if (userDetails.user !== null && calendar === null) {
             return (<div>Choose a diet to start tracking!</div>)
