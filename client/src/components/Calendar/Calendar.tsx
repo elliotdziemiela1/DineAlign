@@ -23,6 +23,7 @@ export enum Privacy {
 }
 
 export interface CalendarDetails {
+    _id?: string;
     // A calendar cannot have zero days. Have at least one.
     // It is important that days MUST ALWAYS BE SORTED in ascending day number order
     // This should be verified by the backend when creating calendars.

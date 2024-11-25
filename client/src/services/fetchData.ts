@@ -1,5 +1,6 @@
+import exp from "constants";
 import { CalendarDetails, Privacy } from "../components/Calendar/Calendar";
-import { EmptyUser, User } from "../components/Profile/Profile";
+import { DietDetails, EmptyUser, User } from "../components/Profile/Profile";
 import axios from "axios";
 
 export async function fetchCalendar(id: string): Promise<CalendarDetails | null> {
@@ -51,3 +52,9 @@ export async function fetchAllUsers(): Promise<User[] | null> {
 
     return response.data.data
 }   
+
+export async function fetchAllCalendars(): Promise<CalendarDetails[] | null> {
+    const response = await axios.get("/api/calendars");
+
+    return response.data.data
+}
