@@ -3,8 +3,9 @@ import { AuthContext } from "../..";
 import styles from "./Home.module.scss";
 import { EmptyUser, User } from "../Profile/Profile";
 import { fetchCalendar, fetchUserByID, fetchPopularCalendarIDs, fetchUserByEmail } from "../../services/fetchData";
-import { CalendarDay, CalendarDetails, showCurrentDay } from "../Calendar/Calendar";
+import { CalendarDay, CalendarDetails, DayWithIndex, showCurrentDay } from "../Calendar/Calendar";
 import Calendar from "../Calendar/Calendar";
+import { getDayOfWeek, getEnumFromDate } from "../../utils/CalendarUtils";
 
 export enum MenuDisplay {
     FEED = 0,
@@ -32,13 +33,39 @@ export default function Home() {
     function showFeed() {
         switch (display) {
             case MenuDisplay.FEED:
-                var feed = [];
+                if (feed.loading) {
+                    return (
+                        <div>
+                            Loading..
+                        </div>
+                    );
+                } else {
+                    return (
+                        <>
+                            {feed.feed.map((item, idx) => {
+                                return (
+                                    <div className={`${styles.day}`} key={idx}>
+                                        <p>{`User: ${item.user.username}`}</p>
+                                        <p>{`Day ${item.index + 1}`}</p>
+                                        <p>{getDayOfWeek(new Date())}</p>
+                                        <p>{item?.descriptor ?? "No overview provided."}</p>
+                                        {item?.mealEntries.map((mealEntry, idx) => {
+                                            return (
+                                                <div key={idx}>
+                                                    <h3>{mealEntry.name}</h3>
+                                                    <p>{`Time of day: ${mealEntry.time}`}</p>
+                                                    {!!mealEntry.description && <p>{mealEntry.description}</p>}
+                                                    {!!mealEntry.link && <a href={mealEntry.link}>Source</a>}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )
+                            })}
+                        </>
+                    );
+                }
                 
-                return (
-                    <>
-                        {}
-                    </>
-                );
             case MenuDisplay.TRENDING:
                 return (
                     <>
@@ -56,7 +83,10 @@ export default function Home() {
     const [user, setUser] = useState<User>(EmptyUser);
     const [calendar, setCalendar] = useState<CalendarDetails | null>(null);
     const [popularCalendarIDs, setPopularCalendarIDs] = useState<string[] | null>([]);
-    const [feed, setFeed] = useState<CalendarDay[]>([]);
+    const [feed, setFeed] = useState<{loading: boolean, feed: DayWithIndex[]}>({
+        loading: true,
+        feed: [],
+    });
     const [display, setDisplay] = useState<MenuDisplay>(MenuDisplay.TRENDING);
 
     console.log("Home:", userDetails);
@@ -87,22 +117,43 @@ export default function Home() {
         fetchPopCalendars();
     }, []);
 
-    // useEffect(() => {
-    //     async function fetchDayFromUser(user_id: string) {
-    //         const result = await fetchUserByID(user_id);
-    //         if (result !== null) {
-    //             //If user exists, fetch calendar
-
-    //         }
-    //     }
-    // })
+    useEffect(() => {
+        async function fetchDayFromUser(userId: string) {
+            const result = await fetchUserByID(userId);
+            if (result !== null && result.followsDiet?.diet) {
+                //If user exists and follows diet, fetch calendar
+                const calendarResult = await fetchCalendar(result.followsDiet?.diet);
+                if (calendarResult !== null) {
+                    //Store user's current day into the feed
+                    const currentTime = new Date();
+                    const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(result.followsDiet?.dietStarted.getTime() / 86400000) * 86400000)) / 86400000);
+                    return {index: currentDayIndex % calendarResult.days.length, user: result, ...calendarResult.days[currentDayIndex % calendarResult.days.length]};
+                }
+            }
+            return null;
+        }
+        async function fetchAllDays() {
+            var newFeed: DayWithIndex[] = [];
+            console.log("Fetching current days of users:", user.following);
+            for (const userId of user.following) {
+                const feedItem = await fetchDayFromUser(userId);
+                if (feedItem !== null) {
+                    newFeed.push(feedItem);
+                }
+            }
+            setFeed({loading: false, feed: newFeed});
+        }
+        if (display === MenuDisplay.FEED) {
+            fetchAllDays();
+        }
+    }, [user.following, display]);
 
     return (
         <div className={styles.layout}>
-            {/* {<div className={styles.menu}>
-                <div>Feed</div>
-                <div>Trending Diets</div>
-            </div>} */}
+            {<div className={styles.menu}>
+                <div onClick={() => setDisplay(MenuDisplay.FEED)}>Feed</div>
+                <div onClick={() => setDisplay(MenuDisplay.TRENDING)}>Trending Diets</div>
+            </div>}
             <div className={styles.feed}>
                 {showFeed()}
             </div>
