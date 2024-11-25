@@ -24,6 +24,11 @@ export async function fetchUserByEmail(email: string): Promise<User | null> {
     return user ? parseDates(user) : null;
 }
 
+export async function fetchUserByUsername(username: string): Promise<User | null> {
+    const users = await fetchAllUsers();
+    const user = users?.find((item) => item.username === username)
+    return user ? parseDates(user) : null;
+}
 
 function parseDates(user: User): User {
     if (user?.followsDiet?.dietStarted) {
