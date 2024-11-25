@@ -51,12 +51,16 @@ var calendarSchema = new mongoose.Schema ({
         default: "private"
     },
     ratings: {
-        type: [],
+        type: [String],
+        default: []
+    },
+    followedBy: {
+        type: [mongoose.Schema.Types.ObjectId],
         default: []
     },
     days: {
         type: [daySchema],
-        default: [{descriptor: "1"},{descriptor: "2"},{descriptor: "3"},{descriptor: "4"},{descriptor: "5"},{descriptor: "6"},{descriptor: "7"}]
+        default: [{descriptor: "First Day"},{descriptor: "Second Day"},{descriptor: "Third Day"},{descriptor: "Fourth Day"},{descriptor: "Fifth Day"},{descriptor: "Sixth Day"},{descriptor: "Seventh Day"}]
     },
     name: {
         type: String,

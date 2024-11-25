@@ -81,9 +81,10 @@ function FollowerProfileShort ({id}: {id:string}){
                 setUser(result)
             }
         }
+        fetcher();
     }, [])
 
-    return (<div>
+    return (<div className={style.followerProfileShort}>
         <p>{user?.username}</p>
         <Link to={`/users/${user?._id}`}>View Profile</Link>
     </div>)
@@ -147,7 +148,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             </div>
             <div className={style.shortFollowersList}>
                 <h3>Followers: </h3>
-                {calendar.followedBy?.map((f, idx) => idx < 3 && <FollowerProfileShort id={f}/>)}
+                {calendar.followedBy?.map((f, idx) => idx < 3 && <FollowerProfileShort id={f} key={idx}/>)}
                 <button onClick={() => setListOpen(true)}>View all followers and ratings</button>
             </div>
 
@@ -156,7 +157,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                 {/* <h2>Creator: {calendar.owner}</h2> */}
                 <div className={style.followersList}>
                     <h3>Followers</h3>
-                    {calendar.followedBy?.map((f, idx) => <p key={idx}>{f}</p>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
+                    {calendar.followedBy?.map((f, idx) => <FollowerProfileShort id={f} key={idx}/>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
                 </div>
                 <div className={style.ratingsList}>
                     <h3>Ratings</h3>

@@ -30,8 +30,8 @@ export default function Login() {
     }
     return (
         <>
-            <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-            <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <input type="email" name="email" value={email} placeholder="email" onChange={(e) => setEmail(e.target.value)}/>
+            <input type="password" name="password" value={password} placeholder="password" onChange={(e) => setPassword(e.target.value)}/>
             <button type="button" onClick={(evt) => {
                 evt.preventDefault();
                 setIsLoading(true);
