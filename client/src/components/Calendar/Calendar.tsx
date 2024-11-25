@@ -4,6 +4,7 @@ import Day, { CurrentDay, DetailedDay } from './Day'
 import { EmptyUser, User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
 import { fetchCalendar, fetchUserByEmail, fetchUserByID } from "../../services/fetchData";
+import { Link } from 'react-router-dom';
 
 export interface Meal {
     time: string;
@@ -69,6 +70,26 @@ export function showCurrentDay(startDate: Date, days: CalendarDay[]): React.JSX.
     );
 }
 
+
+function FollowerProfileShort ({id}: {id:string}){
+    const [user, setUser] = useState<User | null>();
+
+    useEffect(() => {
+        async function fetcher () {
+            const result = await fetchUserByID(id)
+            if (result != null){
+                setUser(result)
+            }
+        }
+    }, [])
+
+    return (<div>
+        <p>{user?.username}</p>
+        <Link to={`/users/${user?._id}`}>View Profile</Link>
+    </div>)
+}
+
+
 /**
  * Component Calendar takes in a calendar id, which, on creation, fetches the corresponding calendar
  * from the backend
@@ -119,19 +140,20 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
         <div className={style.calendar}>
             <h1>{calendar.name}</h1>
             <h2>Creator: {owner?.username ?? "No owner"}</h2>
+            <Link to={`/profile/${owner?._id}`}>View Profile</Link>
             <div className={style.tags}>
                 <h3>Tags: </h3>
                 {calendar.tags?.map((t, idx) => <p key={idx}>{t}</p>)}
             </div>
             <div className={style.shortFollowersList}>
                 <h3>Followers: </h3>
-                {calendar.followedBy?.map((f, idx) => idx < 3 && <p>{f}</p>)}
+                {calendar.followedBy?.map((f, idx) => idx < 3 && <FollowerProfileShort id={f}/>)}
                 <button onClick={() => setListOpen(true)}>View all followers and ratings</button>
             </div>
 
             <div className={`${listOpen ? style.modalOpen : style.modalClosed}`}>
                 <button onClick={() => setListOpen(false)}> x </button>
-                <h2>Creator: {calendar.owner}</h2>
+                {/* <h2>Creator: {calendar.owner}</h2> */}
                 <div className={style.followersList}>
                     <h3>Followers</h3>
                     {calendar.followedBy?.map((f, idx) => <p key={idx}>{f}</p>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
@@ -152,3 +174,4 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
         </div>
     );
 }
+
