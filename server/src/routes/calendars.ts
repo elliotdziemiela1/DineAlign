@@ -7,53 +7,64 @@ const calendarsRouter = (router:Router) => {
     const validPrivacy = ["unlisted", "private", "public"];
 
     router.get('/', async (req: Request, res: Response) =>{
-        const query = Calendar.find();
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try{
+            const query = Calendar.find().session(session);
             const result = await query.exec();
+            await session.commitTransaction();
             res.status(200).json({message: "Valid response", data:result});
         }
         catch (err) {
+            await session.abortTransaction();
             res.status(500).json({message:"Internal server error - GET", data:err});
         }
+        session.endSession();
     });
 
     router.post('/', async (req:Request, res:Response) => {
-        try {
+        if(!req.body || !req.body["ownedBy"]) {
             // Validate req.body
-            if(!req.body || !req.body["ownedBy"]) {
             res.status(400).json({ message: "Invalid request body / 'ownedBy' is required", data: {} });
+            return;
         }
-        
-        // Validate and convert 'ownedBy' to ObjectId
         const ownedBy = req.body["ownedBy"];
-        if (!isValidObjectId(ownedBy)) {
+        if (!isValidObjectId(ownedBy)) {// Validate 'ownedBy'
             res.status(400).json({
                 message: "'ownedBy' must be a valid ObjectId.",
                 data: {},
             });
             return; // Stops execution of post
         }
-        
-        const owner_id = new Types.ObjectId(ownedBy);
-        
-        // Validate privacy
+
         const privacy = req.body["privacy"];
         if(privacy && !validPrivacy.includes(privacy)) {
             res.status(400).json({ message: "Invalid privacy option", data: {} });
             return; // Stops execution of post
         }
-        
-        var addedCalendar = new Calendar({
-            ownedBy: owner_id,
-            privacy: privacy || undefined,
-            dayOffset: req.body["dayOffset"] || undefined,
-        });
-        
-        const result = await addedCalendar.save();
-        res.status(201).json({ message: "Calendar created successfully", data: result});
-        } catch(err) {
+
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        try {
+            // Convert 'ownedBy' to ObjectId
+            const owner_id = new Types.ObjectId(ownedBy);
+            
+            // Validate privacy
+            var addedCalendar = new Calendar({
+                ownedBy: owner_id,
+                privacy: privacy || undefined,
+                dayOffset: req.body["dayOffset"] || undefined,
+            });
+            
+            const result = await addedCalendar.save( {session} );
+            await session.commitTransaction();
+            res.status(201).json({ message: "Calendar created successfully", data: result});
+        } 
+        catch(err) {
+            await session.abortTransaction();
             res.status(500).json({ message: "Internal Service Error", data: err });
         }
+        session.endSession();
     });
     
     router.get('/:id', async (req: Request, res:Response) => {
@@ -64,17 +75,25 @@ const calendarsRouter = (router:Router) => {
             res.status(400).json({ message: "Invalid calendar ID" });
             return; // Stops execution of post
         }
-    
+
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
-            const calendar = await Calendar.findById(id);
+            const calendar = await Calendar.findById(id).session(session);
             if (!calendar) {
+                await session.abortTransaction();
                 res.status(404).json({ message: "Calendar not found" });
-                return; // Stops execution of post
             }
-            res.status(200).json({ message: "Valid response", data: calendar });
-        } catch (err) {
+            else{
+                await session.commitTransaction();
+                res.status(200).json({ message: "Valid response", data: calendar });
+            }
+        } 
+        catch (err) {
+            await session.abortTransaction();
             res.status(500).json({ message: "Internal Server Error", data: err });
         }
+        session.endSession();
     });
 
     router.put('/:id', async (req: Request, res: Response) => {
@@ -86,27 +105,33 @@ const calendarsRouter = (router:Router) => {
             res.status(400).json({ message: "Invalid calendar ID", data: {} });
             return;
         }
-        
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
-            let calendar = await Calendar.findById(id);
+            let calendar = await Calendar.findById(id).session(session);
             if(!calendar) {
+                await session.abortTransaction();
                 res.status(404).json({ message: "Calendar not found" });
-                return; // Stops execution of post
             }
+            else{
+                // Update all calendar attributes slated in updates
+                Object.keys(updates).forEach((key) => {
+                    if(key in calendar && updates[key] !== undefined) {
+                        calendar[key] = updates[key]; // ignore error
+                    }
+                });
 
-            // Update all calendar attributes slated in updates
-            Object.keys(updates).forEach((key) => {
-                if(key in calendar && updates[key] !== undefined) {
-                    calendar[key] = updates[key]; // ignore error
-                }
-            });
-
-            // save updated calendar
-            const updatedCalendar = await calendar.save();
-            res.status(200).json({ message: "Calendar updated", data: updatedCalendar });
-        } catch (err) {
+                // save updated calendar
+                const updatedCalendar = await calendar.save({ session });
+                await session.commitTransaction();
+                res.status(200).json({ message: "Calendar updated", data: updatedCalendar });
+            }
+        } 
+        catch (err) {
+            await session.abortTransaction();
             res.status(500).json({ message:"Internal server error - FIND / DELETE", data:err });
         }
+        session.endSession();
     });
 
     router.delete('/:id', async (req: Request, res: Response) => {
@@ -117,13 +142,23 @@ const calendarsRouter = (router:Router) => {
             res.status(400).json({ message: "Invalid calendar ID", data: {} });
             return;
         }
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
-            const result = await Calendar.findByIdAndDelete(id);
-            if (result) res.status(200).json({ mesage: "Calendar deleted", data: result });
-            else res.status(404).json({ message: "Calendar not found", data:{} });
+            const result = await Calendar.findByIdAndDelete(id).session(session);
+            if (result) {
+                await session.commitTransaction();
+                res.status(200).json({ message: "Calendar deleted", data: result });
+            }
+            else {
+                await session.abortTransaction();
+                res.status(404).json({ message: "Calendar not found", data:{} });
+            }
         } catch (err) {
+            await session.abortTransaction();
             res.status(500).json({ message:"Internal server error - FIND / DELETE", data:err });
         }
+        session.endSession();
     });
 
     return router;
