@@ -1,73 +1,65 @@
+import exp from "constants";
 import { CalendarDetails, Privacy } from "../components/Calendar/Calendar";
-import { EmptyUser, User } from "../components/Profile/Profile";
-
+import { DietDetails, EmptyUser, User } from "../components/Profile/Profile";
+import axios from "axios";
 
 export async function fetchCalendar(id: string): Promise<CalendarDetails | null> {
-    //TODO
-    return {
-        //It is important that days MUST ALWAYS BE SORTED in ascending day number order
-        days: [ // dummy data
-            {
-                descriptor: "Day 1",
-                mealEntries: [
-                    {time:"time", name:"meal", link:"link"},
-                    {time:"time", name:"meal", link:"link"}
-                ]
-            },
-            {
-                descriptor: "Day 2",
-                mealEntries: [
-                    {time:"time", name:"meal", link:"link"},
-                    {time:"time", name:"meal", link:"link"}
-                ]
-            },
-            {
-                descriptor: "Day 3",
-                mealEntries: [
-                    {time:"time", name:"meal", link:"link"},
-                    {time:"time", name:"meal", link:"link"}
-                ]
-            },
-            {
-                descriptor: "Day 4",
-                mealEntries: [
-                    {time:"time", name:"meal", link:"link"},
-                    {time:"time", name:"meal", link:"link"}
-                ]
-            }
-        ],
-        owner: 'Test Owner',
-        followedBy: ['Test Follower 1', 'test follower 2', 'test follower 3', 'test follower 4'],
-        tags: ["test tag 1", "Test tag 2"],
-        privacy: Privacy.PRIVATE,
-        ratings: ["test rating 1", "test rating 2", "test rating 3"],
-    };
+    try {
+        const response = await axios.get(`/api/calendars/${id}`);
+        const data : CalendarDetails | null = response.data.data;
+        console.log("Trying to fetch calendar:", data);
+        return data;
+    } catch (err: unknown) {
+        console.log("Error while fetching calendar:", err);
+        return null;
+    }
+    
 }
 
 
 
-export async function fetchUser(email: string): Promise<User | null> {
-    //TODO
-    return {
-        name: "John",
-        followers: [],
-        following: [],
-        followsDiet: {
-            diet: "test",
-            dietStarted: new Date('11-16-2024'),
-            daysCompleted: [],
-            repeating: false,
-        },
-        completedDiets: 0,
-        dietsCreated: [],
-    };
+export async function fetchUserByEmail(email: string): Promise<User | null> {
+    const users = await fetchAllUsers();
+    const user = users?.find((item) => item.email === email)
+    return user ? parseDates(user) : null;
 }
 
+export async function fetchUserByUsername(username: string): Promise<User | null> {
+    const users = await fetchAllUsers();
+    const user = users?.find((item) => item.username === username)
+    return user ? parseDates(user) : null;
+}
+
+function parseDates(user: User): User {
+    if (user?.followsDiet?.dietStarted) {
+        user.followsDiet.dietStarted = new Date(user.followsDiet.dietStarted);
+    }
+
+    return user;
+}
+
+export async function fetchUserByID(id: string): Promise<User | null> {
+    const response = await axios.get(`/api/users/${id}`);
+    const user: User | null = response.data.data;
+
+    return user ? parseDates(user) : null;
+}
 
 export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
     return [
-        "id_1",
-        "id_2",
-        "id_3"
+        "673f73cb54a474d56c8e35ae",
+        "673f748ee1fad7f712907244"
     ]
 }   
+
+export async function fetchAllUsers(): Promise<User[] | null> {
+    const response = await axios.get(`/api/users`)
+
+    return response.data.data
+}   
+
+export async function fetchAllCalendars(): Promise<CalendarDetails[] | null> {
+    const response = await axios.get("/api/calendars");
+
+    return response.data.data
+}

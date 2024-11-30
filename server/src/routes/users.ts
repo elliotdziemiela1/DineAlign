@@ -94,7 +94,7 @@ const usersRouter = (router:Router) => {
 
             if (!user) {
                 await session.abortTransaction();
-                res.status(404).json({ messege: "User not found" });
+                res.status(404).json({ message: "User not found" });
             }
             else{
                 await session.commitTransaction();
@@ -132,14 +132,14 @@ const usersRouter = (router:Router) => {
 
             else {
                 await session.abortTransaction();
-                res.status(400).json({ messege: "Invalid id or email", data: {} });
+                res.status(400).json({ message: "Invalid id or email", data: {} });
                 session.endSession();
                 return;
             }
 
             if(!user) {
                 await session.abortTransaction();
-                res.status(404).json({ messsage: "User not found", data: {} });
+                res.status(404).json({ message: "User not found", data: {} });
             }
             else{
                 // Update all user attributes slated in updates
@@ -190,7 +190,7 @@ const usersRouter = (router:Router) => {
             }
             else{
                 await session.commitTransaction();
-                res.status(200).json({ mesage: "User deleted", data: result });
+                res.status(200).json({ message: "User deleted", data: result });
             }
         } 
         catch (err) {

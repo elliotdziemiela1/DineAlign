@@ -33,8 +33,8 @@ export function CurrentDay({ index, day, dayOfWeek }: {index: number, day: Calen
         <div className={`${style.day}`} onClick={() => navigate("/profile")}>
             <p>{`Day ${index + 1}`}</p>
             <p>{dayOfWeek}</p>
-            <p>{day.descriptor ?? "No overview provided."}</p>
-            {day.mealEntries.map((mealEntry, idx) => {
+            <p>{day?.descriptor ?? "No overview provided."}</p>
+            {day?.mealEntries.map((mealEntry, idx) => {
                 return (
                     <div key={idx}>
                         <h3>{mealEntry.name}</h3>

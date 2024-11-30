@@ -3,6 +3,8 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, Us
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '..';
+import { fetchUserByUsername } from './fetchData';
+import axios from 'axios';
 
 
 const firebaseConfig = {
@@ -30,15 +32,22 @@ export interface AuthenticationResult {
     }
 }
 
-export async function signUp(email: string, password: string): Promise<AuthenticationResult> {
+export async function signUp(username: string, email: string, password: string): Promise<AuthenticationResult> {
     var result: AuthenticationResult = {
         success: true,
     }
     try {
-        console.log("Attempting to sign up with", email, password);
+        console.log("Attempting to sign up with", username, email, password);
+        // const existingUser = await fetchUserByUsername(username);
+        // if (existingUser){
+        //     console.log("user with that username already exists")
+        //     result.success = false;
+        //     return result;
+        // }
         result.user = await createUserWithEmailAndPassword(auth, email, password);
         const token = await result.user.user.getIdToken();
         sessionStorage.setItem("accessToken", token);
+        await axios.post("/api/users", {"username": username, "email": email, "password": password})
     } catch (err: any) {
         result.success = false;
         result.error = {
@@ -77,7 +86,7 @@ export async function signOut() {
 // Once the auth state has resolved, loading will be false, and the final component will be loaded
 export function Authorize({ component }: {component: React.JSX.Element}) {
     const user = useContext(AuthContext);
-    console.log(user, auth.currentUser, auth);
+    console.log("Authorizing user:", user);
     if (user.user === null && user.loading === false) {
         return (
             <Navigate to="/login"/>

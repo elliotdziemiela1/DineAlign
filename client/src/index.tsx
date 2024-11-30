@@ -8,6 +8,9 @@ import Profile from './components/Profile/Profile';
 import { Authorize, auth } from './services/auth';
 import { onAuthStateChanged, UserInfo } from 'firebase/auth';
 import Login from './components/Login/Login';
+import SearchUsers from './components/SearchReults/SearchUsers';
+import SearchDiets from './components/SearchReults/SearchDiets';
+import CalendarPage from './components/Calendar/CalendarPage';
 
 //import reportWebVitals from './reportWebVitals';
 
@@ -42,7 +45,10 @@ const router = createBrowserRouter(createRoutesFromElements([
     <Route path="/home" element={<Home/>}/>
     <Route path="/profile" element={<Authorize component={<Profile/>}/>}/>
     <Route path="/editor" element={<div>Not implemented.</div>}/>
-    <Route path="/search" element={<div>Not implemented.</div>}/>
+    <Route path="/searchUsers/:query" element={<SearchUsers/>}/>
+    <Route path="/searchDiets/:query" element={<SearchDiets/>}/>
+    <Route path="/profile/:id" element={<Profile/>}/>
+    <Route path='/calendar/:id' element={<CalendarPage/>}/>
     <Route path="/login" element={<Login/>}/>
   </Route>,
   <Route path="/*" element={<div>404 not found.</div>}/>

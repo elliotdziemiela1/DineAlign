@@ -1,29 +1,37 @@
 import mongoose from 'mongoose';
 
 var mealSchema = new mongoose.Schema({
-    timeOfDay: {
+    time: {
         type:String,
+        default: "breakfast"
     },
-    mealName: {
+    name: {
         type: String,
         default:"Unnamed Meal"
     },
     description: {
         type: String,
-        default:""
+        default:"Most important meal of the day"
     },
     link : {
         type: String,
-        default: ""
+        default: "https://www.the-girl-who-ate-everything.com/bacon-egg-and-potato-breakfast-skillet/"
     }
 })
 
 var daySchema = new mongoose.Schema ({
-    days: {
+    descriptor: {
         type: String,
+        default: "This is a healthy day"
     },
-    mealEntry: {
-        type: mealSchema
+    mealEntries: {
+        type: [mealSchema],
+        default: [{time: "morning", name: "breakfast", 
+            description:"Skillet for breakfast", link: "https://www.the-girl-who-ate-everything.com/bacon-egg-and-potato-breakfast-skillet/"},
+            {time: "noon", name: "Lunch", 
+                description:"Just a snack for lunch", link: ""},
+            {time: "evening", name: "Dinner", 
+                description:"Grilled Chicken Salad for dinner", link: "https://www.the-girl-who-ate-everything.com/bacon-egg-and-potato-breakfast-skillet/"}]
     }
 
 });
@@ -34,7 +42,7 @@ var calendarSchema = new mongoose.Schema ({
         type:[String],
         default:[]
     },
-    ownedBy: {
+    owner: {
         type: mongoose.Schema.Types.ObjectId,
         default: null
     },
@@ -43,18 +51,26 @@ var calendarSchema = new mongoose.Schema ({
         default: "private"
     },
     ratings: {
-        type: [],
+        type: [String],
         default: []
     },
-    dayOffset: {
-        type: Number,
-        default: 0
+    followedBy: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: []
     },
-    planDays: {
+    days: {
         type: [daySchema],
-        default: []
+        default: [{descriptor: "First Day"},{descriptor: "Second Day"},{descriptor: "Third Day"},{descriptor: "Fourth Day"},{descriptor: "Fifth Day"},{descriptor: "Sixth Day"},{descriptor: "Seventh Day"}]
+    },
+    name: {
+        type: String,
+        default: "",
+        required: true,
+    },
+    description: {
+        type: String,
+        default: "Example Calendar description",
     }
-
 });
 
 const Calendar = mongoose.model('Calendar', calendarSchema);

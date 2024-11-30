@@ -4,6 +4,12 @@
     justify-content: space-around;
 }
 
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+}
+
 .feed {
     width: 50%;
     margin: 20px;
