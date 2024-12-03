@@ -52,6 +52,17 @@ export interface CalendarDetails {
     description: string;
 }
 
+export const EmptyCalendar = {
+    days: [],
+    owner: '',
+    followedBy: [],
+    tags: [],
+    privacy: Privacy.PRIVATE,
+    ratings: [],
+    name: '',
+    description: '',
+};
+
 export interface DayDetails {
     isOpen: boolean;
     index: number;
@@ -99,16 +110,7 @@ function FollowerProfileShort ({id}: {id:string}){
  */
 export default function Calendar({ user, calendarId }: {user: User | null, calendarId: string}) {
     const [dayDetails, setDayDetails] = useState<DayDetails>({isOpen: false, index: -1});
-    const [calendar, setCalendar] = useState<CalendarDetails>({
-        days: [],
-        owner: '',
-        followedBy: [],
-        tags: [],
-        privacy: Privacy.PRIVATE,
-        ratings: [],
-        name: '',
-        description: '',
-    });
+    const [calendar, setCalendar] = useState<CalendarDetails>(EmptyCalendar);
     const [listOpen, setListOpen] = useState<Boolean>(false); // refers to the followers/ratings list
     const [owner, setOwner] = useState<User | null>(null);
 
@@ -135,7 +137,8 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     const startDate = user?.followsDiet?.dietStarted ?? new Date();
     const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
     const currentTime = new Date();
-    const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
+    const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000) % calendar.days.length;
+    //console.log("Current day index:", currentDayIndex);
 
     return (
         <div className={style.calendar}>

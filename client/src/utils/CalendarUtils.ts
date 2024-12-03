@@ -1,3 +1,5 @@
+import { Privacy } from "../components/Calendar/Calendar";
+
 //Don't really need this actually
 export enum DayOfTheWeek {
     SUNDAY = 0,
@@ -64,4 +66,19 @@ export function getDayOfWeek(date: Date | DayOfTheWeek): string {
                 return "Saturday";
         }
     }
+}
+
+export function displayPrivacy(privacy: Privacy): string {
+    switch (privacy) {
+        case Privacy.PRIVATE:
+            return "Private"
+        case Privacy.UNLISTED:
+            return "Unlisted"
+        default:
+            return "Public"
+    }
+}
+
+export function switchPrivacyOption(privacy: Privacy): Privacy {
+    return (privacy + 1) % 3;
 }
