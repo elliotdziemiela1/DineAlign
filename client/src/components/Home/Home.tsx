@@ -15,18 +15,17 @@ export enum MenuDisplay {
 export default function Home() {
     function showDiet() {
         if (userDetails.loading) {
-            return (<div>Loading...</div>);
+            return (<div className={styles.loading}>Loading...</div>);
         } else if (userDetails.user === null) {
-            return (<div>Login to see your current diet!</div>);
+            return (<div className={styles.noContent}>Login to see your current diet!</div>);
         } else if (calendar === null) {
-            return (<div>Choose a diet to start tracking!</div>)
+            return (<div className={styles.noContent}>Choose a diet to start tracking!</div>);
         } else {
-            console.log("Showing diet:", user.followsDiet?.dietStarted);
             return (
                 <div>
                     {showCurrentDay(user.followsDiet?.dietStarted as Date, calendar.days)}
                 </div>
-            )
+            );
         }
     }
 
@@ -34,48 +33,41 @@ export default function Home() {
         switch (display) {
             case MenuDisplay.FEED:
                 if (feed.loading) {
-                    return (
-                        <div>
-                            Loading..
-                        </div>
-                    );
+                    return <div className="loading">Loading...</div>;
                 } else {
                     return (
                         <>
-                            {feed.feed.map((item, idx) => {
-                                return (
-                                    <div className={`${styles.day}`} key={idx}>
-                                        <p>{`User: ${item.user.username}`}</p>
-                                        <p>{`Day ${item.index + 1}`}</p>
-                                        <p>{getDayOfWeek(new Date())}</p>
-                                        <p>{item?.descriptor ?? "No overview provided."}</p>
-                                        {item?.mealEntries.map((mealEntry, idx) => {
-                                            return (
-                                                <div key={idx}>
-                                                    <h3>{mealEntry.name}</h3>
-                                                    <p>{`Time of day: ${mealEntry.time}`}</p>
-                                                    {!!mealEntry.description && <p>{mealEntry.description}</p>}
-                                                    {!!mealEntry.link && <a href={mealEntry.link}>Source</a>}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )
-                            })}
+                            {feed.feed.map((item, idx) => (
+                                <div className={`${styles.day}`} key={idx}>
+                                    <p>{`User: ${item.user.username}`}</p>
+                                    <p>{`Day ${item.index + 1}`}</p>
+                                    <p>{getDayOfWeek(new Date())}</p>
+                                    <p>{item?.descriptor ?? "No overview provided."}</p>
+                                    {item?.mealEntries.map((mealEntry, idx) => (
+                                        <div key={idx}>
+                                            <h3>{mealEntry.name}</h3>
+                                            <p>{`Time of day: ${mealEntry.time}`}</p>
+                                            {!!mealEntry.description && <p>{mealEntry.description}</p>}
+                                            {!!mealEntry.link && <a href={mealEntry.link}>Source</a>}
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
                         </>
                     );
                 }
-                
+    
             case MenuDisplay.TRENDING:
                 return (
                     <>
                         <h2>Popular Diets:</h2>
-                        {popularCalendarIDs?.map((id, idx) => <div className={styles.popularCalDiv}>
-                            <Calendar key={idx} user={null} calendarId={id}/>
-                        </div>)}
+                        {popularCalendarIDs?.map((id, idx) => (
+                            <div className={styles.popularCalDiv} key={idx}>
+                                <Calendar user={null} calendarId={id} />
+                            </div>
+                        ))}
                     </>
-                    
-                )
+                );
         }
     }
     
