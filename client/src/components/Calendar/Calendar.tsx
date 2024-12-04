@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../..";
 import style from './Calendar.module.scss'
 import Day, { CurrentDay, DetailedDay } from './Day'
 import { EmptyUser, User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
-import { fetchCalendar, fetchUserByEmail, fetchUserByID } from "../../services/fetchData";
+import { fetchCalendar, fetchUserByEmail, fetchUserByID, followCalendar } from "../../services/fetchData";
 import { Link } from 'react-router-dom';
 
 export interface Meal {
@@ -134,6 +135,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
         fetchCal();
     }, [calendarId]);
 
+    const currentUser = useContext(AuthContext);
     const startDate = user?.followsDiet?.dietStarted ?? new Date();
     const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
     const currentTime = new Date();
@@ -143,6 +145,11 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     return (
         <div className={style.calendar}>
             <h1>{calendar.name}</h1>
+            <button onClick={()=>{
+                if (calendar._id && currentUser.user?.email){
+                    followCalendar(calendar._id, currentUser.user.email);
+                }
+                }}>Make this your diet</button>
             <h2>Creator: {owner?.username ?? "No owner"}</h2>
             <Link to={`/profile/${owner?._id}`}>View Profile</Link>
             <div className={style.tags}>
@@ -157,7 +164,6 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
 
             <div className={`${listOpen ? style.modalOpen : style.modalClosed}`}>
                 <button onClick={() => setListOpen(false)}> x </button>
-                {/* <h2>Creator: {calendar.owner}</h2> */}
                 <div className={style.followersList}>
                     <h3>Followers</h3>
                     {calendar.followedBy?.map((f, idx) => <FollowerProfileShort id={f} key={idx}/>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
