@@ -1,7 +1,9 @@
 import exp from "constants";
+import { useContext } from "react";
 import { CalendarDetails, Privacy } from "../components/Calendar/Calendar";
 import { DietDetails, EmptyUser, User } from "../components/Profile/Profile";
 import axios from "axios";
+import { AuthContext } from ".."
 
 export async function fetchCalendar(id: string): Promise<CalendarDetails | null> {
     try {
@@ -16,6 +18,17 @@ export async function fetchCalendar(id: string): Promise<CalendarDetails | null>
     
 }
 
+export async function followCalendar(calId: string, userEmail: string) {
+    const user = await fetchUserByEmail(userEmail)
+    if (user){
+        user.followsDiet = {diet: calId,
+            dietStarted: new Date(),
+            daysCompleted: [],
+            repeating: true}
+        axios.put(`/api/users/${user._id}`,user);
+    }
+    
+}
 
 
 export async function fetchUserByEmail(email: string): Promise<User | null> {
