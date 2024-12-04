@@ -1,0 +1,43 @@
+.calendarBody {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(auto-fill, 200px);
+    gap: 20px;
+}
+
+.calendar {
+    display: flex;
+    flex-direction: column;
+}
+
+.modalClosed {
+    display: none;
+}
+
+.modalOpen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 20;
+}
+
+.exitModal {
+    position: fixed;
+    z-index: 20;
+    right: 8%;
+    top: 8%;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    background-image: url("../../assets/x_circle.svg");
+    background-position: center;
+    background-size: contain;
+    background-color: transparent;
+    filter: invert(99%) sepia(1%) saturate(609%) hue-rotate(194deg) brightness(104%) contrast(100%);
+}

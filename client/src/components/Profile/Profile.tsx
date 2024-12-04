@@ -9,7 +9,7 @@ import { AuthContext } from "../..";
 import { fetchUserByEmail, fetchUserByID } from "../../services/fetchData";
 
 export interface User {
-    _id?: string;
+    _id: string;
     username: string;
     bio?: string;
     age?: string;
@@ -31,6 +31,7 @@ export interface DietDetails {
 }
 
 export const EmptyUser = {
+    _id: '',
     username: "",
     followers: [],
     following: [],

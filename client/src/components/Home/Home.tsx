@@ -114,8 +114,10 @@ export default function Home() {
             const popCalendarIDs = await fetchPopularCalendarIDs();
             setPopularCalendarIDs(popCalendarIDs);
         }
-        fetchPopCalendars();
-    }, []);
+        if (display === MenuDisplay.TRENDING) {
+            fetchPopCalendars();
+        }
+    }, [display]);
 
     useEffect(() => {
         async function fetchDayFromUser(userId: string) {
