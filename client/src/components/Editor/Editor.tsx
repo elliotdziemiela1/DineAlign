@@ -71,19 +71,19 @@ export default function Editor( {existingCalendarId}: {existingCalendarId: strin
 
     return (
         <div className={style.calendar}>
-            <h1>
-                Name:&nbsp;
+            <h1 className={style.name}>
+                <p>Name:&nbsp;</p>
                 <input value={calendar.name} onChange={(e) => setCalendar({...calendar, name: e.target.value})}/>
             </h1>
-            <h2>Creator: {user.username ?? "Loading..."}</h2>
-            <div>
-                Privacy:&nbsp;
-                <span onClick={() => setCalendar({...calendar, privacy: switchPrivacyOption(calendar.privacy)})}>
+            <h2 className={style.creator}>Creator: {user.username ?? "Loading..."}</h2>
+            <div className={style.privacy}>
+                <p>Privacy:&nbsp;</p>
+                <span className={style.privacy_option} onClick={() => setCalendar({...calendar, privacy: switchPrivacyOption(calendar.privacy)})}>
                     {displayPrivacy(calendar.privacy)}
                 </span>
             </div>
-            <div>
-                Description:
+            <div className={style.description}>
+                <p>Description:</p>
                 <textarea value={calendar.description} onChange={(e) => setCalendar({...calendar, description: e.target.value})}></textarea>
             </div>
             <TagEditor calendar={calendar} setCalendar={setCalendar}/>
@@ -110,7 +110,7 @@ function DayEditor({calendar, setCalendar}: DayEditorProps) {
         }
         setCalendar({...calendar, days: newDays});
     }
-    
+
     function updateEditor(index: number) {
         setDay({
             open: index >= 0,
@@ -124,8 +124,12 @@ function DayEditor({calendar, setCalendar}: DayEditorProps) {
 
     return (
         <>
-            <div onClick={() => updateEditor(calendar.days.length)}>Add Day</div>
-            <div className={style.calendarBody}>
+            <div className={style.diet}>
+                <p>Diet:&nbsp;</p>
+                <div className={style.add_day} onClick={() => updateEditor(calendar.days.length)}>Add Day</div>
+            </div>
+            
+            <div className={`${calendar.days.length === 0 ? undefined : style.calendarBody}`}>
                 {calendar.days.length === 0 ? 'No days added. Use the button to add days to your diet!' : calendar.days?.map((day, idx) =>
                     <div className={style.day} key={idx} onClick={() => updateEditor(idx)}>
                         <p>{`Day ${idx + 1}`}</p>
@@ -150,18 +154,29 @@ function DayEditor({calendar, setCalendar}: DayEditorProps) {
 }
 
 function TagEditor({calendar, setCalendar}: TagEditorProps) {
+    function deleteTag(index: number) {
+        var newTags = calendar.tags;
+        newTags.splice(index, 1);
+        setCalendar({...calendar, tags: newTags});
+    }
+
     const [modal, setModal] = useState(false);
     const [tagName, setTagName] = useState('');
 
     return (
         <>
             <div className={style.tags}>
-                <h3>Tags: </h3>
-                {calendar.tags?.map((t, idx) => <p key={idx}><span>X&nbsp;</span>{t}</p>)}
-                <div onClick={() => setModal(true)}>Add Tag</div>
+                <div className={style.tag_header}>
+                    <p>Tags:&nbsp;</p>
+                    <div className={style.add_tag} onClick={() => setModal(true)}>Add Tag</div>
+                </div>
+                <div className={style.tag_list}>
+                    {calendar.tags?.map((t, idx) => <p className={style.tag} key={idx} onClick={() => deleteTag(idx)}>{t}</p>)}
+                </div>
+                
             </div>
             <div className={`${style.modal} ${modal ? style.modalOpen : style.modalClosed}`}>
-                <div className={style.exitModal} onClick={() => setModal(false)}>X</div>
+                <div className={style.exitModal} onClick={() => setModal(false)}></div>
                 <p>Tag name:&nbsp;</p>
                 <input value={tagName} onChange={(e) => setTagName(e.target.value)}/>
                 <input type="button" onClick={() => {setModal(false); setCalendar({...calendar, tags: [...calendar.tags, tagName]})}} value="Create Tag"/>

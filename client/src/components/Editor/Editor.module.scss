@@ -8,6 +8,104 @@
 .calendar {
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+
+.name {
+    display: flex;
+    justify-items: stretch;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.name input {
+    border-radius: 0.5rem;
+}
+
+.creator {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.privacy {
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.privacy > p {
+    font-weight: bold;
+}
+
+.privacy_option {
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid;
+    padding: 3px;
+    border-radius: 0.5rem;
+}
+
+.description {
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.description > p {
+    font-weight: bold;
+}
+
+.tags {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.tag_header, .diet {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.tag_header > p, .diet > p {
+    font-weight: bold;
+}
+
+.tag_list {
+    padding-top: 5px;
+}
+
+.add_tag, .add_day {
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid;
+    border-radius: 0.5rem;
+    padding: 4px;
+}
+
+.tag {
+    border: 1px solid;
+    border-radius: 0.5rem;
+    padding: 1px 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tag:hover {
+    background-color: gray;
+}
+
+.day {
+    display: flex;
+    flex-direction: column;
+    background-color: aqua;
+    padding: 5px;
+    overflow: hidden;
 }
 
 .modalClosed {
