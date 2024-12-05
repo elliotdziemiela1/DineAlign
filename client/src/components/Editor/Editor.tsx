@@ -35,6 +35,8 @@ export default function Editor( {existingCalendarId}: {existingCalendarId: strin
         console.log("Current calendar:", calendar);
         if (calendar.days.length === 0) {
             console.log("Calendar is missing days!");
+        } else {
+            
         }
     }
     const [calendar, setCalendar] = useState<CalendarDetails>(EmptyCalendar);
