@@ -23,7 +23,7 @@
     },
     "options": {
         "allowedHosts": ["localhost", ".localhost"],
-        "proxy": "https://localhost:5050/"
+        "proxy": "http://localhost:5050/"
     },
     "scripts": {
         "start": "react-scripts start",
