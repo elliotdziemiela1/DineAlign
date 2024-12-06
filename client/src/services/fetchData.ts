@@ -5,11 +5,14 @@ import { DietDetails, EmptyUser, User } from "../components/Profile/Profile";
 import axios from "axios";
 import { AuthContext } from ".."
 
-export async function fetchCalendar(id: string): Promise<CalendarDetails | null> {
+export async function fetchCalendar(id: string, userId?: string): Promise<CalendarDetails | null> {
     try {
         const response = await axios.get(`/api/calendars/${id}`);
         const data : CalendarDetails | null = response.data.data;
         console.log("Trying to fetch calendar:", data);
+        if (data !== null && data.privacy === Privacy.PRIVATE && (!userId || data.owner !== userId)) {
+            throw Error("Calendar is private.");
+        }
         return data;
     } catch (err: unknown) {
         console.log("Error while fetching calendar:", err);
@@ -59,10 +62,17 @@ export async function fetchUserByID(id: string): Promise<User | null> {
 }
 
 export async function fetchPopularCalendarIDs(): Promise<string[] | null> {
-    return [
-        "673f73cb54a474d56c8e35ae",
-        "673f748ee1fad7f712907244"
-    ]
+    try {
+        const response = await axios.get(`/api/calendars`);
+        const data = response.data.data;
+        var ids = [];
+        for (const calendar of data) {
+            ids.push(calendar._id);
+        }
+        return ids;
+    } catch (err: unknown) {
+        return null;
+    }
 }   
 
 export async function fetchAllUsers(): Promise<User[] | null> {

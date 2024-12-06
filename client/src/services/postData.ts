@@ -6,6 +6,7 @@ import { CalendarDetails } from "../components/Calendar/Calendar";
 export async function createCalendar(calendar: CalendarDetails, calendarId: string | null) {
     try {
         var response = (calendarId === null) ? await axios.post('/api/calendars', calendar) : await axios.put('/api/calendars/' + calendarId, calendar);
+        console.log(response);
     } catch (err: unknown) {
         console.log(err);
     }

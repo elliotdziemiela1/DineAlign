@@ -101,6 +101,7 @@ export default function Home() {
         
     }, [userDetails]);
 
+    // TODO - fix popular calendars to grab all public calendars
     useEffect(() => {
         async function fetchPopCalendars() {
             const popCalendarIDs = await fetchPopularCalendarIDs();

@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { CalendarDetails, DayDetails, DayWithIndex, EmptyCalendar, Meal } from "../Calendar/Calendar";
+import { CalendarDetails, DayDetails, DayWithIndex, EmptyCalendar, Meal, Privacy } from "../Calendar/Calendar";
 import style from "./Editor.module.scss";
 import { fetchCalendar, fetchUserByEmail } from "../../services/fetchData";
 import { AuthContext } from "../..";
 import { EmptyUser, User } from "../Profile/Profile";
 import { displayPrivacy, switchPrivacyOption } from "../../utils/CalendarUtils";
+import { createCalendar } from "../../services/postData";
+import { Link, useParams } from "react-router-dom";
 
 interface DayEditorProps {
     calendar: CalendarDetails;
@@ -28,22 +30,32 @@ interface TentativeDay {
     mealEntries: Meal[];
 }
 
-// If null, creating a new calendar, else, updating an existing calendar id
+// If null, creating a new calendar, else, updating an existing calendar id if the owner matches the current owner
+// Otherwise, a copy is created under the new owner
 // Assume the existing calendar id exists 
-export default function Editor( {existingCalendarId}: {existingCalendarId: string | null}) {
+export default function Editor() {
     async function publishCalendar() {
         console.log("Current calendar:", calendar);
         if (calendar.days.length === 0) {
             console.log("Calendar is missing days!");
         } else {
+            if (userDetails.user?.email && userDetails.user.email === user.email) {
+                await createCalendar(calendar, existingCalendarId);
+            } else {
+                await createCalendar(calendar, null);
+            }
             
         }
     }
+    const params = useParams();
+    const existingCalendarId = params.id ?? null;
     const [calendar, setCalendar] = useState<CalendarDetails>(EmptyCalendar);
     const [user, setUser] = useState<User>(EmptyUser);
-
+    const [isCalendarLoaded, setIsCalendarLoaded] = useState(false);
     const userDetails = useContext(AuthContext);
 
+    console.log("Existing calendar id:", existingCalendarId);
+    console.log(user._id, calendar.owner, user._id === calendar.owner);
     useEffect(() => {
         async function fetcher() {
             var userResult: User | null = null;
@@ -64,13 +76,27 @@ export default function Editor( {existingCalendarId}: {existingCalendarId: strin
                     setCalendar(calendarResult);
                 }
             } else {
-                setCalendar(c => ({...c, owner: userResult?._id ?? ''}))
+                setCalendar(c => ({...c, owner: userResult?._id ?? ''}));
             }
-            
+            setIsCalendarLoaded(true);
         }
         fetcher();
     }, [existingCalendarId, userDetails.user]);
 
+    if (userDetails.loading || !isCalendarLoaded) {
+        return (
+            <div>
+                Loading...
+            </div>
+        )
+    } else if (calendar.privacy === Privacy.PRIVATE && !userDetails.loading && calendar.owner !== user._id) {
+        return (
+            <div>
+                This user has privated their calendar!
+                <Link to="/home">Go home.</Link>
+            </div>
+        )
+    }
     return (
         <div className={style.calendar}>
             <h1 className={style.name}>

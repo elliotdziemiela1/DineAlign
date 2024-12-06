@@ -45,7 +45,8 @@ const router = createBrowserRouter(createRoutesFromElements([
     <Route index element={<Navigate to="/home" replace={true}/>}/>
     <Route path="/home" element={<Home/>}/>
     <Route path="/profile" element={<Authorize component={<Profile/>}/>}/>
-    <Route path="/editor" element={<Authorize component={<Editor existingCalendarId={null}/>}/>}/>
+    <Route path="/editor" element={<Authorize component={<Editor/>}/>}/>
+    <Route path="/editor/:id" element={<Authorize component={<Editor/>}/>}/>
     <Route path="/searchUsers/:query" element={<SearchUsers/>}/>
     <Route path="/searchDiets/:query" element={<SearchDiets/>}/>
     <Route path="/profile/:id" element={<Profile/>}/>
