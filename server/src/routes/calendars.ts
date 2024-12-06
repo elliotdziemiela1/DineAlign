@@ -10,7 +10,7 @@ const calendarsRouter = (router:Router) => {
         const session = await mongoose.startSession();
         session.startTransaction();
         try{
-            const query = Calendar.find().session(session);
+            const query = Calendar.find({privacy: 2}).session(session);
             const result = await query.exec();
             await session.commitTransaction();
             res.status(200).json({message: "Valid response", data:result});
@@ -23,22 +23,23 @@ const calendarsRouter = (router:Router) => {
     });
 
     router.post('/', async (req:Request, res:Response) => {
-        if(!req.body || !req.body["ownedBy"]) {
+        console.log("Post calendar received:", req.body);
+        if(!req.body || !req.body["owner"]) {
             // Validate req.body
             res.status(400).json({ message: "Invalid request body / 'ownedBy' is required", data: {} });
             return;
         }
-        const ownedBy = req.body["ownedBy"];
+        const ownedBy = req.body["owner"];
         if (!isValidObjectId(ownedBy)) {// Validate 'ownedBy'
             res.status(400).json({
-                message: "'ownedBy' must be a valid ObjectId.",
+                message: "'owner' must be a valid ObjectId.",
                 data: {},
             });
             return; // Stops execution of post
         }
 
         const privacy = req.body["privacy"];
-        if(privacy && !validPrivacy.includes(privacy)) {
+        if(privacy && privacy < 0 || privacy > 2) {
             res.status(400).json({ message: "Invalid privacy option", data: {} });
             return; // Stops execution of post
         }
@@ -50,13 +51,10 @@ const calendarsRouter = (router:Router) => {
             const owner_id = new Types.ObjectId(ownedBy);
             
             // Validate privacy
-            var addedCalendar = new Calendar({
-                ownedBy: owner_id,
-                privacy: privacy || undefined,
-                dayOffset: req.body["dayOffset"] || undefined,
-            });
-            
+            var addedCalendar = new Calendar(req.body);
+            console.log(addedCalendar);
             const result = await addedCalendar.save( {session} );
+
             await session.commitTransaction();
             res.status(201).json({ message: "Calendar created successfully", data: result});
         } 

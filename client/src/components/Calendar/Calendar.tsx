@@ -5,7 +5,7 @@ import Day, { CurrentDay, DetailedDay } from './Day'
 import { EmptyUser, User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
 import { fetchCalendar, fetchUserByEmail, fetchUserByID, followCalendar } from "../../services/fetchData";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export interface Meal {
     time: string;
@@ -52,6 +52,17 @@ export interface CalendarDetails {
     // Diet description
     description: string;
 }
+
+export const EmptyCalendar = {
+    days: [],
+    owner: '',
+    followedBy: [],
+    tags: [],
+    privacy: Privacy.PRIVATE,
+    ratings: [],
+    name: '',
+    description: '',
+};
 
 export interface DayDetails {
     isOpen: boolean;
@@ -100,18 +111,10 @@ function FollowerProfileShort ({id}: {id:string}){
  */
 export default function Calendar({ user, calendarId }: {user: User | null, calendarId: string}) {
     const [dayDetails, setDayDetails] = useState<DayDetails>({isOpen: false, index: -1});
-    const [calendar, setCalendar] = useState<CalendarDetails>({
-        days: [],
-        owner: '',
-        followedBy: [],
-        tags: [],
-        privacy: Privacy.PRIVATE,
-        ratings: [],
-        name: '',
-        description: '',
-    });
+    const [calendar, setCalendar] = useState<CalendarDetails>(EmptyCalendar);
     const [listOpen, setListOpen] = useState<Boolean>(false); // refers to the followers/ratings list
     const [owner, setOwner] = useState<User | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchCal() {
@@ -137,16 +140,23 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     const startDate = user?.followsDiet?.dietStarted ?? new Date();
     const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
     const currentTime = new Date();
-    const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000);
+    const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000) % calendar.days.length;
+    console.log(user?.followsDiet?.diet, calendar._id);
 
     return (
         <div className={style.calendar}>
             <h1>{calendar.name}</h1>
+            {user !== null && user.followsDiet && user.followsDiet.diet !== calendar._id && 
             <button onClick={()=>{
                 if (calendar._id && currentUser.user?.email){
                     followCalendar(calendar._id, currentUser.user.email);
                 }
-                }}>Make this your diet</button>
+                }}>Make this your diet
+            </button>
+            }
+            <button onClick={() => {
+                navigate('/editor/' + calendar._id);
+            }}>Edit diet</button>
             <h2>Creator: {owner?.username ?? "No owner"}</h2>
             <Link to={`/profile/${owner?._id}`}>View Profile</Link>
             <div className={style.tags}>

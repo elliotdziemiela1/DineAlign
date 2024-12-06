@@ -101,13 +101,16 @@ export default function Home() {
         
     }, [userDetails]);
 
+    // TODO - fix popular calendars to grab all public calendars
     useEffect(() => {
         async function fetchPopCalendars() {
             const popCalendarIDs = await fetchPopularCalendarIDs();
             setPopularCalendarIDs(popCalendarIDs);
         }
-        fetchPopCalendars();
-    }, []);
+        if (display === MenuDisplay.TRENDING) {
+            fetchPopCalendars();
+        }
+    }, [display]);
 
     useEffect(() => {
         async function fetchDayFromUser(userId: string) {
