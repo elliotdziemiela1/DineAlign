@@ -87,7 +87,7 @@ function FollowerProfileShort ({id}: {id:string}){
 
     return (<div className={style.followerProfileShort}>
         <p>{user?.username}</p>
-        <Link to={`/users/${user?._id}`}>View Profile</Link>
+        <Link className={style.profileLink} to={`/users/${user?._id}`}>View Profile</Link>
     </div>)
 }
 
@@ -112,6 +112,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     });
     const [listOpen, setListOpen] = useState<Boolean>(false); // refers to the followers/ratings list
     const [owner, setOwner] = useState<User | null>(null);
+
 
     useEffect(() => {
         async function fetchCal() {
@@ -142,32 +143,31 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     return (
         <div className={style.calendar}>
             <h1>{calendar.name}</h1>
-            <button onClick={()=>{
-                if (calendar._id && currentUser.user?.email){
-                    followCalendar(calendar._id, currentUser.user.email);
-                }
-                }}>Make this your diet</button>
-            <h2>Creator: {owner?.username ?? "No owner"}</h2>
-            <Link to={`/profile/${owner?._id}`}>View Profile</Link>
+            <h2>Created by{" "}
+            <Link to={`/profile/${owner?._id}`}>{owner?.username ?? "No owner"}</Link>
+            </h2>
             <div className={style.tags}>
                 <h3>Tags: </h3>
                 {calendar.tags?.map((t, idx) => <p key={idx}>{t}</p>)}
             </div>
             <div className={style.shortFollowersList}>
-                <h3>Followers: </h3>
-                {calendar.followedBy?.map((f, idx) => idx < 3 && <FollowerProfileShort id={f} key={idx}/>)}
-                <button onClick={() => setListOpen(true)}>View all followers and ratings</button>
+                <h3>Followers: {calendar.followedBy?.length || 0}</h3>
+                <button className={style.profileLink} onClick={() => setListOpen(true)}>
+                    View all followers and ratings
+                </button>
             </div>
 
             <div className={`${listOpen ? style.modalOpen : style.modalClosed}`}>
-                <button onClick={() => setListOpen(false)}> x </button>
-                <div className={style.followersList}>
-                    <h3>Followers</h3>
-                    {calendar.followedBy?.map((f, idx) => <FollowerProfileShort id={f} key={idx}/>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
-                </div>
-                <div className={style.ratingsList}>
-                    <h3>Ratings</h3>
-                    {calendar.ratings?.map((r, idx) => <p key={idx}>{r}</p>)}  {/* Assuming r is a ratingID, replace with api call to get r's details (maybe starts and description)*/}
+                <div className={style.modalContainer}>
+                    <button className={style.closeButton} onClick={() => setListOpen(false)}> x </button>
+                    <div className={style.followersList}>
+                        <h3>Followers</h3>
+                        {calendar.followedBy?.map((f, idx) => <FollowerProfileShort id={f} key={idx}/>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
+                    </div>
+                    <div className={style.ratingsList}>
+                        <h3>Ratings</h3>
+                        {calendar.ratings?.map((r, idx) => <p key={idx}>{r}</p>)}  {/* Assuming r is a ratingID, replace with api call to get r's details (maybe starts and description)*/}
+                    </div>
                 </div>
             </div>
             <div className={style.calendarBody}>
@@ -178,6 +178,13 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             </div>
             <DetailedDay isOpen={dayDetails.isOpen} setDetails={setDayDetails}
                 details={dayDetails.index >= 0 && dayDetails.index < calendar.days.length ? calendar.days[dayDetails.index] : undefined}/>
+            <button
+                className={style.followButton} 
+                onClick={()=>{
+                if (calendar._id && currentUser.user?.email){
+                    followCalendar(calendar._id, currentUser.user.email);
+                }
+                }}>Make this your diet</button>
         </div>
     );
 }

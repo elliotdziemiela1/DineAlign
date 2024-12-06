@@ -1,39 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap');
+
 .calendarBody {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(auto-fill, 200px);
+    grid-template-rows: repeat(auto-fill);
     gap: 20px;
+    
 }
 
 .calendar {
     display: flex;
     flex-direction: column;
 }
-
+.calendar h1 {
+    font-family: 'Montserrat', sans-serif;
+}
+.calendar h2 {
+    font-family: 'Montserrat', sans-serif;
+}
 .tags {
     display: flex;
-    margin: 10px;
-}
-
-.tags h2 {
-    padding: 0 10px;
+    margin: 5px;
 }
 
 .tags p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
     padding: 0 10px;
     margin: 0 10px;
-    background-color: aquamarine;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #ffd591;
+    align-content: center;
 }
 
 .shortFollowersList {
     display: flex;
-    margin: 10px;
+    margin: 5px;
 }
 
 .shortFollowersList p {
     // background-color:coral;
     padding: 0 10px;
     margin: 0 10px
+}
+
+.shortFollowersList h3, .tags h3 {
+    padding: 5px;
+    font-size: 1.2rem;
+    color: black;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.profileLink {
+    display: inline-block;
+    text-decoration: none; /* Remove the default underline */
+    color: #e65100; /* Orange text color */
+    font-weight: bold;
+    padding: 8px 15px;
+    border: 1px solid #ffd591;
+    border-radius: 20px; /* Rounded corners */
+    background: #fffae6;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    font-family: 'Montserrat', sans-serif; /* Use Montserrat font */
+    font-size: 0.9rem;
+    cursor: pointer;
 }
 
 .modalClosed {
@@ -49,7 +80,7 @@
     align-items: center;
     height: 100vh;
     width: 100vw;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 20;
 }
 
@@ -59,32 +90,116 @@
     margin: 10px 0;
 }
 
-.followersList {
+.modalContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the modal */
+    width: 90%;
+    max-width: 600px;
+    background-color: white; /* Background for the modal */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    z-index: 100;
+}
+
+.closeButton {
+    position: absolute; /* Position it relative to the modal container */
+    top: 15px; /* Adjust distance from the top */
+    right: 15px; /* Adjust distance from the right */
+    background-color: #ff0000; /* Aqua background */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Make it circular */
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.closeButton:hover {
+    background-color: rgb(200, 0, 0); /* Slightly lighter aqua on hover */
+    transform: scale(1.1); /* Subtle scale effect */
+}
+
+.closeButton:active {
+    transform: scale(1); /* Reset scale on click */
+}
+
+.followersList, .ratingsList {
     display: flex;
     flex-direction: column;
-    background-color: antiquewhite;
+    background-color: antiquewhite; /* Antique white background */
     padding: 20px;
+    border-radius: 15px;
     margin: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 90%;
+    max-width: 600px;
+    font-family: 'Montserrat', sans-serif;
 }
 
-.followersList p {
+.followersList h3, .ratingsList h3 {
+    font-size: 1.2rem;
+    color: #e65100;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.followersList p, .ratingsList p{
     margin: 10px 0;
-}
-
-.ratingsList {
-    display: flex;
-    flex-direction: column;
-    background-color: antiquewhite;
-    padding: 20px;
-    margin: 10px;
-}
-
-.ratingsList p {
-    margin: 10px 0;
+    font-weight: 600;
+    font-size: 20px;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .followerProfileShort{
     margin: 10px;
     padding: 10px;
-    background-color: aqua;
+    border-radius: 5px;
+    background-color: rgb(109, 219, 255);
+    display: flex;
+    flex-direction: row;
+}
+
+.followerProfileShort p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.followButton {
+    background: linear-gradient(to right, #ffaa43, #ff9717);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 10px;
+}
+
+.followButton:hover {
+    background: linear-gradient(to right, #ff9717, #ff9900);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.followButton:active {
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
