@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { CalendarDetails, DayDetails, DayWithIndex, EmptyCalendar, Meal, Privacy } from "../Calendar/Calendar";
+import React, { useContext, useEffect, useState } from "react";
+import { CalendarDetails, EmptyCalendar, Meal, Privacy } from "../Calendar/Calendar";
 import style from "./Editor.module.scss";
 import { fetchCalendar, fetchUserByEmail } from "../../services/fetchData";
 import { AuthContext } from "../..";
@@ -72,6 +72,7 @@ export default function Editor() {
                     console.log("Fetched existing calendar to edit");
                     if (userResult !== null) {
                         calendarResult.owner = userResult._id;
+                        delete calendarResult._id;
                     }
                     setCalendar(calendarResult);
                 }

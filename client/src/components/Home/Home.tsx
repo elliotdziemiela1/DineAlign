@@ -3,9 +3,9 @@ import { AuthContext } from "../..";
 import styles from "./Home.module.scss";
 import { EmptyUser, User } from "../Profile/Profile";
 import { fetchCalendar, fetchUserByID, fetchPopularCalendarIDs, fetchUserByEmail } from "../../services/fetchData";
-import { CalendarDay, CalendarDetails, DayWithIndex, showCurrentDay } from "../Calendar/Calendar";
+import { CalendarDetails, DayWithIndex, showCurrentDay } from "../Calendar/Calendar";
 import Calendar from "../Calendar/Calendar";
-import { getDayOfWeek, getEnumFromDate } from "../../utils/CalendarUtils";
+import { getDayOfWeek } from "../../utils/CalendarUtils";
 
 export enum MenuDisplay {
     FEED = 0,
@@ -85,7 +85,6 @@ export default function Home() {
 
     useEffect(() => {
         async function fetcher() {
-            console.log("Home fetcher")
             console.log(userDetails.user?.email)
             if (!!userDetails.user?.email) {
                 const result = await fetchUserByEmail(userDetails.user?.email);

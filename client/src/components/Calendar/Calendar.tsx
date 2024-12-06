@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../..";
 import style from './Calendar.module.scss'
 import Day, { CurrentDay, DetailedDay } from './Day'
-import { EmptyUser, User } from '../Profile/Profile';
+import { User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
 import { addRating, fetchCalendar, fetchUserByEmail, fetchUserByID, followCalendar } from "../../services/fetchData";
 import { Link, useNavigate } from 'react-router-dom';

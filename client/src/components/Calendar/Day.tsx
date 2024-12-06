@@ -1,6 +1,6 @@
-import React, { useState, useEffect, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import style from './Day.module.scss';
-import { CalendarDay, DayDetails, Meal } from './Calendar';
+import { CalendarDay, DayDetails } from './Calendar';
 import { useNavigate } from 'react-router-dom';
 
 interface DayProps {

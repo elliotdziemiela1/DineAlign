@@ -1,9 +1,8 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../..";
 import { signOut } from "../../services/auth";
 import styles from './NavBar.module.scss';
-import { serialize } from "v8";
 
 function NavBar() {
     const user = useContext(AuthContext);
