@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { modelNames, mongo } from 'mongoose';
 
 var mealSchema = new mongoose.Schema({
     time: {
@@ -36,6 +36,21 @@ var daySchema = new mongoose.Schema ({
 
 });
 
+var ratingSchema = new mongoose.Schema ({
+    thumb: {
+        type: Number, // 0 for thumbs down, 1 for thumbs up
+        default: 1
+    },
+    review: {
+        type: String,
+        default: ""
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        default: null
+    }
+})
+
 
 var calendarSchema = new mongoose.Schema ({
     tags : {
@@ -51,7 +66,7 @@ var calendarSchema = new mongoose.Schema ({
         default: 0
     },
     ratings: {
-        type: [String],
+        type: [ratingSchema],
         default: []
     },
     followedBy: {

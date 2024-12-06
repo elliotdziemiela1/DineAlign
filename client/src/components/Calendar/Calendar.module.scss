@@ -96,7 +96,8 @@
     left: 50%;
     transform: translate(-50%, -50%); /* Center the modal */
     width: 90%;
-    max-width: 600px;
+    height: 80%;
+    // max-width: 600px;
     background-color: white; /* Background for the modal */
     border-radius: 15px;
     padding: 20px;
@@ -136,7 +137,7 @@
     transform: scale(1); /* Reset scale on click */
 }
 
-.followersList, .ratingsList {
+.followersList {
     display: flex;
     flex-direction: column;
     background-color: antiquewhite; /* Antique white background */
@@ -144,8 +145,23 @@
     border-radius: 15px;
     margin: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    width: 90%;
-    max-width: 600px;
+    width: 30%;
+    // max-width: 600px;
+    font-family: 'Montserrat', sans-serif;
+    align-items: center;
+}
+
+.ratingsList {
+    display: flex;
+    flex-direction: column;
+    background-color: antiquewhite; /* Antique white background */
+    padding: 20px;
+    // top: 100px;
+    border-radius: 15px;
+    // margin-top: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 60%;
+    // max-width: 600px;
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -156,12 +172,12 @@
     text-align: center;
 }
 
-.followersList p, .ratingsList p{
-    margin: 10px 0;
-    font-weight: 600;
-    font-size: 20px;
-    font-family: 'Montserrat', sans-serif;
-}
+// .followersList p, .ratingsList p{
+//     margin: 10px 0;
+//     font-weight: 600;
+//     font-size: 20px;
+//     font-family: 'Montserrat', sans-serif;
+// }
 
 .followerProfileShort{
     margin: 10px;
@@ -169,6 +185,7 @@
     border-radius: 5px;
     background-color: rgb(109, 219, 255);
     display: flex;
+    max-width: fit-content;
     flex-direction: row;
 }
 
@@ -202,4 +219,21 @@
 
 .followButton:active {
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.thumb {
+    width: 25px;
+    height: auto;
+}
+
+.rating {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.ratingText {
+    width: 50%;
+    font-size: 13px;
+    // font-weight: 600;
 }

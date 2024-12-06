@@ -4,8 +4,12 @@ import style from './Calendar.module.scss'
 import Day, { CurrentDay, DetailedDay } from './Day'
 import { EmptyUser, User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
-import { fetchCalendar, fetchUserByEmail, fetchUserByID, followCalendar } from "../../services/fetchData";
+import { addRating, fetchCalendar, fetchUserByEmail, fetchUserByID, followCalendar } from "../../services/fetchData";
 import { Link, useNavigate } from 'react-router-dom';
+import thumbsUp from "../../assets/thumbsUp.svg";
+import thumbsDown from "../../assets/thumbsDown.svg";
+
+const MAX_REVIEW_CHARS = 700
 
 export interface Meal {
     time: string;
@@ -31,6 +35,16 @@ export enum Privacy {
     PUBLIC = 2,
 }
 
+export enum Thumb {
+    DOWN = 0,
+    UP = 1,
+}
+export interface Rating {
+    thumb: Thumb,
+    review: string,
+    owner: string
+}
+
 export interface CalendarDetails {
     _id?: string;
     // A calendar cannot have zero days. Have at least one.
@@ -46,7 +60,7 @@ export interface CalendarDetails {
     // Privacy option
     privacy: Privacy;
     // List of ratings, leave as string for now, low priority feature
-    ratings: string[];
+    ratings: Rating[];
     // Diet's name
     name: string;
     // Diet description
@@ -98,7 +112,7 @@ function FollowerProfileShort ({id}: {id:string}){
 
     return (<div className={style.followerProfileShort}>
         <p>{user?.username}</p>
-        <Link className={style.profileLink} to={`/users/${user?._id}`}>View Profile</Link>
+        <Link className={style.profileLink} to={`/profile/${user?._id}`}>View Profile</Link>
     </div>)
 }
 
@@ -114,6 +128,8 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     const [calendar, setCalendar] = useState<CalendarDetails>(EmptyCalendar);
     const [listOpen, setListOpen] = useState<Boolean>(false); // refers to the followers/ratings list
     const [owner, setOwner] = useState<User | null>(null);
+    const [newRating, setNewRating] = useState<Thumb>(0);
+    const [newReview, setNewReview] = useState<string>("")
     const navigate = useNavigate();
 
 
@@ -135,14 +151,31 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             }
         }
         fetchCal();
-    }, [calendarId]);
+    }, []);
 
     const currentUser = useContext(AuthContext);
     const startDate = user?.followsDiet?.dietStarted ?? new Date();
     const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
     const currentTime = new Date();
     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000) % calendar.days.length;
-    console.log(user?.followsDiet?.diet, calendar._id);
+    // console.log(user?.followsDiet?.diet, calendar._id);
+
+    async function refresh (){
+        if (calendar._id) {
+            let cal = await fetchCalendar(calendar._id)
+            if (cal)
+                setCalendar(cal);
+        }
+    }
+
+    async function handleAddRating(){
+        if (calendar._id && currentUser.user?.email && newReview.length <= MAX_REVIEW_CHARS){
+            await addRating(calendar._id,newReview,newRating,currentUser.user.email);
+            let cal = await fetchCalendar(calendar._id)
+            if (cal)
+                setCalendar(cal);
+        }
+    }
 
     return (
         <div className={style.calendar}>
@@ -179,8 +212,24 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                         {calendar.followedBy?.map((f, idx) => <FollowerProfileShort id={f} key={idx}/>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
                     </div>
                     <div className={style.ratingsList}>
+                        {(currentUser.user?.email) &&
+                        <div className={style.ratingEditor}>
+                            <h3>Leave a review</h3>
+                            <input type="review" name="review" value={newReview} placeholder="Review" onChange={(e) => setNewReview(e.target.value)}/>
+                            <button onClick={() => setNewRating(Thumb.UP)}><img src={thumbsUp} className={style.thumb}></img></button>
+                            <button onClick={() => setNewRating(Thumb.DOWN)}><img src={thumbsDown} className={style.thumb}></img></button>
+                            {newRating === Thumb.UP && <img src={thumbsUp} className={style.thumb}></img>}
+                            {newRating === Thumb.DOWN && <img src={thumbsDown} className={style.thumb}></img>}
+                            <button onClick={() => { {handleAddRating();}}}>Add Rating</button>
+                        </div>}
+                        {!currentUser.user?.email && <p>Log in to leave review</p>}
                         <h3>Ratings</h3>
-                        {calendar.ratings?.map((r, idx) => <p key={idx}>{r}</p>)}  {/* Assuming r is a ratingID, replace with api call to get r's details (maybe starts and description)*/}
+                        {calendar.ratings?.map((r, idx) => <div key={idx} className={style.rating}>
+                                {r.thumb === Thumb.UP && <img src={thumbsUp} className={style.thumb}></img>}
+                                {r.thumb === Thumb.DOWN && <img src={thumbsDown} className={style.thumb}></img>}
+                                <p className={style.ratingText}>{r.review}</p>
+                                <FollowerProfileShort id={r.owner}/>
+                            </div>)}  
                     </div>
                 </div>
             </div>
