@@ -31,7 +31,7 @@ export interface AuthenticationResult {
         message: string,
     }
 }
-
+// TODO - move auth to backend to better guarantee atomicity and idempotency whatever when creating users
 export async function signUp(username: string, email: string, password: string): Promise<AuthenticationResult> {
     var result: AuthenticationResult = {
         success: true,

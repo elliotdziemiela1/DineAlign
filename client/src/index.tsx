@@ -11,6 +11,7 @@ import Login from './components/Login/Login';
 import SearchUsers from './components/SearchReults/SearchUsers';
 import SearchDiets from './components/SearchReults/SearchDiets';
 import CalendarPage from './components/Calendar/CalendarPage';
+import Editor from './components/Editor/Editor';
 
 //import reportWebVitals from './reportWebVitals';
 
@@ -44,7 +45,8 @@ const router = createBrowserRouter(createRoutesFromElements([
     <Route index element={<Navigate to="/home" replace={true}/>}/>
     <Route path="/home" element={<Home/>}/>
     <Route path="/profile" element={<Authorize component={<Profile/>}/>}/>
-    <Route path="/editor" element={<div>Not implemented.</div>}/>
+    <Route path="/editor" element={<Authorize component={<Editor/>}/>}/>
+    <Route path="/editor/:id" element={<Authorize component={<Editor/>}/>}/>
     <Route path="/searchUsers/:query" element={<SearchUsers/>}/>
     <Route path="/searchDiets/:query" element={<SearchDiets/>}/>
     <Route path="/profile/:id" element={<Profile/>}/>
