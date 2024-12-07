@@ -1,15 +1,11 @@
-import exp from "constants";
-import { useContext } from "react";
 import { CalendarDetails, Privacy } from "../components/Calendar/Calendar";
-import { DietDetails, EmptyUser, User } from "../components/Profile/Profile";
+import { DietDetails, User } from "../components/Profile/Profile";
 import axios from "axios";
-import { AuthContext } from ".."
 
 export async function fetchCalendar(id: string, userId?: string): Promise<CalendarDetails | null> {
     try {
         const response = await axios.get(`/api/calendars/${id}`);
         const data : CalendarDetails | null = response.data.data;
-        console.log("Trying to fetch calendar:", data);
         if (data !== null && data.privacy === Privacy.PRIVATE && (!userId || data.owner !== userId)) {
             throw Error("Calendar is private.");
         }
@@ -21,14 +17,31 @@ export async function fetchCalendar(id: string, userId?: string): Promise<Calend
     
 }
 
-export async function followCalendar(calId: string, userEmail: string) {
-    const user = await fetchUserByEmail(userEmail)
-    if (user){
-        user.followsDiet = {diet: calId,
+export async function followCalendar(calId: string, userEmail: string): Promise<DietDetails | undefined> {
+    const user = await fetchUserByEmail(userEmail);
+    const calendar = await fetchCalendar(calId);
+    if (user && calendar) {
+        // Remove self from old calendar's followedBy if exists
+        if (user.followsDiet) {
+            const oldCalendar = await fetchCalendar(user.followsDiet.diet);
+            if (oldCalendar) {
+                oldCalendar.followedBy = oldCalendar.followedBy.filter((userId) => userId !== user._id);
+                await axios.put("/api/calendars/" + oldCalendar._id, oldCalendar);
+            }
+        }
+
+        user.followsDiet = {
+            diet: calId,
             dietStarted: new Date(),
             daysCompleted: [],
-            repeating: true}
-        axios.put(`/api/users/${user._id}`,user);
+            repeating: true
+        };
+        await axios.put(`/api/users/${user._id}`,user);
+        
+        calendar.followedBy = [...calendar.followedBy, user._id];
+        return user.followsDiet;
+    } else {
+        return undefined;
     }
     
 }

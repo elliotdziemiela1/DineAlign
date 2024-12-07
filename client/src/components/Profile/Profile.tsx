@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import style from "./Profile.module.css"
 import defaultPfp from "./DefaultPFP.jpg"
 import Calendar from "../Calendar/Calendar"
-import { auth } from "../../services/auth";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { UserCredential } from "firebase/auth";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../..";
 import { fetchUserByEmail, fetchUserByID } from "../../services/fetchData";
 
@@ -91,7 +89,7 @@ export default function Profile() {
                         <div className={style.currentDiet}>
                         {user.followsDiet?.diet ? (
                                 <>
-                                    <Calendar user={user} calendarId={user.followsDiet.diet} />
+                                    <Calendar personalizeUser={user} currentUser={user} calendarId={user.followsDiet.diet}/>
                                 </>
                             ) : (
                                 <p>Loading...</p>
@@ -109,7 +107,7 @@ export default function Profile() {
                             : 
                             user.dietsCreated.map(d => {
                                 return <div className={style.createdDiet}>
-                                <Calendar user={null} calendarId={d} />
+                                <Calendar personalizeUser={null} currentUser={user} calendarId={d} updateUser={setUser}/>
                                 </div>})}
                             <div onClick={() => navigator("/editor")}>
                                 Create a diet now!

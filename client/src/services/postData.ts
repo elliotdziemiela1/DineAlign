@@ -23,8 +23,8 @@ export async function createCalendar(calendar: CalendarDetails) {
             result.err = response.statusText;
             return result;
         }
-        result.data = response.data;
-        return response;
+        result.data = response.data.data;
+        return result;
     } catch (err: unknown) {
         console.log(err);
         result.success = false;

@@ -63,7 +63,7 @@ export default function Home() {
                         <h2>Popular Diets:</h2>
                         {popularCalendarIDs?.map((id, idx) => (
                             <div className={styles.popularCalDiv} key={idx}>
-                                <Calendar user={null} calendarId={id} />
+                                <Calendar personalizeUser={null} currentUser={user} calendarId={id} updateUser={setUser}/>
                             </div>
                         ))}
                     </>

@@ -6,7 +6,8 @@ import { AuthContext } from "../..";
 import { EmptyUser, User } from "../Profile/Profile";
 import { displayPrivacy, switchPrivacyOption } from "../../utils/CalendarUtils";
 import { createCalendar } from "../../services/postData";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 interface DayEditorProps {
     calendar: CalendarDetails;
@@ -43,18 +44,33 @@ export default function Editor() {
     async function publishCalendar() {
         console.log("Current calendar:", calendar);
         if (calendar.days.length === 0) {
-            console.log("Calendar is missing days!");
+            setError("Calendar is missing days!");
         } else {
             const result = await createCalendar(calendar);
-            
+            if (!result.success) {
+                setError("An error occurred while handling the calendar:" + result.err);
+                return;
+            }
+            // If calendar does not contain an id, this means calendar created under user
+            if (!calendar._id) {
+                user.dietsCreated = [...user.dietsCreated, result.data?._id as string];
+                await axios.put("/api/users/" + user._id, user);
+            }
+            console.log("Result:", result);
+            navigator("/calendar/" + result.data?._id);
         }
     }
+
     const params = useParams();
     const existingCalendarId = params.id ?? null;
+    const userDetails = useContext(AuthContext);
+    const navigator = useNavigate();
+
     const [calendar, setCalendar] = useState<CalendarDetails>(EmptyCalendar);
     const [user, setUser] = useState<User>(EmptyUser);
     const [fetchResult, setFetchResult] = useState<FetchResult>(FetchResult.LOADING);
-    const userDetails = useContext(AuthContext);
+    const [error, setError] = useState("");
+    
 
     useEffect(() => {
         async function fetcher() {
@@ -109,13 +125,13 @@ export default function Editor() {
 
     if (userDetails.loading || fetchResult === FetchResult.LOADING) {
         return (
-            <div>
+            <div className={style.loading}>
                 Loading...
             </div>
         )
     } else if (fetchResult === FetchResult.FAIL) {
         return (
-            <div>
+            <div className={style.error}>
                 This user has privated their calendar, or the calendar does not exist!
                 <Link to="/home">Go home.</Link>
             </div>
@@ -142,7 +158,10 @@ export default function Editor() {
             <DayEditor calendar={calendar} setCalendar={setCalendar}/>
             
             <input type="button" onClick={() => publishCalendar()} value="Submit"/>
-            
+            <div className={`${error === '' ? style.modalClosed : style.modalOpen}`}>
+                {error}
+                <button type="button" onClick={() => setError('')}>OK!</button>
+            </div>
         </div>
     );
 }

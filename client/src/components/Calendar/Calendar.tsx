@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../..";
 import style from './Calendar.module.scss'
 import Day, { CurrentDay, DetailedDay } from './Day'
-import { User } from '../Profile/Profile';
+import { EmptyUser, User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
 import { addRating, fetchCalendar, fetchUserByEmail, fetchUserByID, followCalendar } from "../../services/fetchData";
 import { Link, useNavigate } from 'react-router-dom';
@@ -83,6 +83,13 @@ export interface DayDetails {
     index: number;
 }
 
+interface CalendarProps {
+    personalizeUser: User | null;
+    currentUser: User | null;
+    calendarId: string;
+    updateUser?: React.Dispatch<React.SetStateAction<User>>;
+}
+
 // Shows the current day, given a start date
 // This function expects the calendar and start date to be valid
 export function showCurrentDay(startDate: Date, days: CalendarDay[]): React.JSX.Element {
@@ -121,17 +128,17 @@ function FollowerProfileShort ({id}: {id:string}){
  * Component Calendar takes in a calendar id, which, on creation, fetches the corresponding calendar
  * from the backend
  * @param calendarId - String id of the calendar to fetch
- * @param user - User to personalize calendar with. This is not necessarily the owner.
+ * @param personalizeUser - User to personalize calendar with. This is not necessarily the owner.
+ * @param updateUser - Used to force a parent page to reload when the current user has changed state
  */
-export default function Calendar({ user, calendarId }: {user: User | null, calendarId: string}) {
+export default function Calendar({ personalizeUser, currentUser, calendarId, updateUser }: CalendarProps) {
     const [dayDetails, setDayDetails] = useState<DayDetails>({isOpen: false, index: -1});
     const [calendar, setCalendar] = useState<CalendarDetails>(EmptyCalendar);
     const [listOpen, setListOpen] = useState<Boolean>(false); // refers to the followers/ratings list
     const [owner, setOwner] = useState<User | null>(null);
     const [newRating, setNewRating] = useState<Thumb>(0);
-    const [newReview, setNewReview] = useState<string>("")
+    const [newReview, setNewReview] = useState<string>("");
     const navigate = useNavigate();
-
 
     useEffect(() => {
         async function fetchCal() {
@@ -141,24 +148,21 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                     if (cal.owner) {
                         let owner = await fetchUserByID(cal.owner);
                         if (owner !== null) {
-                            console.log("Fetched owner:", owner);
                             setOwner(owner);
                         }
                     }
-                    console.log("Fetched calendar:", cal);
                     setCalendar(cal);
                 }
             }
         }
         fetchCal();
-    }, []);
+    }, [calendarId]);
 
-    const currentUser = useContext(AuthContext);
-    const startDate = user?.followsDiet?.dietStarted ?? new Date();
-    const baseDay = !!(user?.followsDiet?.dietStarted) ? getEnumFromDate(user.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
+    
+    const startDate = personalizeUser?.followsDiet?.dietStarted ?? new Date();
+    const baseDay = !!(personalizeUser?.followsDiet?.dietStarted) ? getEnumFromDate(personalizeUser.followsDiet.dietStarted) : DayOfTheWeek.SUNDAY;
     const currentTime = new Date();
     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000) % calendar.days.length;
-    // console.log(user?.followsDiet?.diet, calendar._id);
 
     async function refresh (){
         if (calendar._id) {
@@ -169,14 +173,14 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
     }
 
     async function handleAddRating(){
-        if (calendar._id && currentUser.user?.email && newReview.length <= MAX_REVIEW_CHARS){
-            await addRating(calendar._id,newReview,newRating,currentUser.user.email);
+        if (calendar._id && currentUser?.email && newReview.length <= MAX_REVIEW_CHARS){
+            await addRating(calendar._id, newReview, newRating, currentUser.email);
             let cal = await fetchCalendar(calendar._id)
             if (cal)
                 setCalendar(cal);
         }
     }
-
+    console.log(calendar.name, currentUser);
     return (
         <div className={style.calendar}>
             <div className={style.calendarTitleBar}>
@@ -206,20 +210,20 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                     </div>
                     <div className={style.ratingsList}>
                         <h3>Leave a review</h3>
-                        {(currentUser.user?.email) &&
+                        {(currentUser?.email) &&
                         <div className={style.ratingEditor}>
-                            {newRating === Thumb.UP && <img src={thumbsUp} className={style.thumb}></img>}
-                            {newRating === Thumb.DOWN && <img src={thumbsDown} className={style.thumb}></img>}
+                            {newRating === Thumb.UP && <img src={thumbsUp} alt="Thumbs Up" className={style.thumb}></img>}
+                            {newRating === Thumb.DOWN && <img src={thumbsDown} alt="Thumbs Down" className={style.thumb}></img>}
                             <input type="review" name="review" value={newReview} placeholder="Review" onChange={(e) => setNewReview(e.target.value)}/>
-                            <button onClick={() => setNewRating(Thumb.UP)}><img src={thumbsUp} className={style.thumb}></img></button>
-                            <button onClick={() => setNewRating(Thumb.DOWN)}><img src={thumbsDown} className={style.thumb}></img></button>
-                            <button onClick={() => { {handleAddRating();}}}>Add Rating</button>
+                            <button onClick={() => setNewRating(Thumb.UP)}><img src={thumbsUp} alt="Thumbs Up" className={style.thumb}></img></button>
+                            <button onClick={() => setNewRating(Thumb.DOWN)}><img src={thumbsDown} alt="Thumbs Down" className={style.thumb}></img></button>
+                            <button onClick={() => handleAddRating()}>Add Rating</button>
                         </div>}
-                        {!currentUser.user?.email && <p>Log in to leave review</p>}
+                        {!currentUser?.email && <p>Log in to leave review</p>}
                         <h3>Ratings</h3>
                         {calendar.ratings?.map((r, idx) => <div key={idx} className={style.rating}>
-                                {r.thumb === Thumb.UP && <img src={thumbsUp} className={style.thumb}></img>}
-                                {r.thumb === Thumb.DOWN && <img src={thumbsDown} className={style.thumb}></img>}
+                                {r.thumb === Thumb.UP && <img src={thumbsUp} alt="Thumbs Up" className={style.thumb}></img>}
+                                {r.thumb === Thumb.DOWN && <img src={thumbsDown} alt="Thumbs Down" className={style.thumb}></img>}
                                 <p className={style.ratingText}>{r.review}</p>
                                 <FollowerProfileShort id={r.owner}/>
                             </div>)}  
@@ -228,21 +232,26 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             </div>
             <div className={style.calendarBody}>
                 {calendar.days?.map((day, idx) => 
-                    <Day index={idx} key={idx} dayOfWeek={getDayOfWeek((baseDay + idx) % 7)} highlighted={user !== null && currentDayIndex === idx}
+                    <Day index={idx} key={idx} dayOfWeek={getDayOfWeek((baseDay + idx) % 7)} highlighted={personalizeUser !== null && currentDayIndex === idx}
                         descriptor={day.descriptor ?? "No overview provided."} openModal={setDayDetails}/>
                 )}
             </div>
             <DetailedDay isOpen={dayDetails.isOpen} setDetails={setDayDetails}
                 details={dayDetails.index >= 0 && dayDetails.index < calendar.days.length ? calendar.days[dayDetails.index] : undefined}/>
-            {/* {user !== null && user.followsDiet && user.followsDiet.diet !== calendar._id && */}
-            <button
-                className={style.followButton} 
-                onClick={()=>{
-                if (calendar._id && currentUser.user?.email){
-                    followCalendar(calendar._id, currentUser.user.email);
-                }
-                }}>Make this your diet</button>
-            {/* } */}
+            {currentUser !== null && calendar._id !== null && 
+                ((!!currentUser.followsDiet?.diet && currentUser.followsDiet.diet !== calendar._id) || (!currentUser.followsDiet)) &&
+            <button className={style.followButton} onClick={async () => {
+                if (calendar._id && currentUser.email) {
+                    const newDiet = await followCalendar(calendar._id, currentUser.email);
+                    if (newDiet !== undefined) {
+                        if (updateUser !== undefined) {
+                            updateUser({...currentUser, followsDiet: newDiet});
+                        }
+                    }
+                }}}>
+                Make this your diet
+            </button>
+            }
         </div>
     );
 }
