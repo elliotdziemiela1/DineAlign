@@ -5,7 +5,7 @@ import Day, { CurrentDay, DetailedDay } from './Day'
 import { EmptyUser, User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
 import { fetchCalendar, fetchUserByEmail, fetchUserByID, followCalendar } from "../../services/fetchData";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; 
 
 export interface Meal {
     time: string;
@@ -98,7 +98,7 @@ function FollowerProfileShort ({id}: {id:string}){
 
     return (<div className={style.followerProfileShort}>
         <p>{user?.username}</p>
-        <Link className={style.profileLink} to={`/users/${user?._id}`}>View Profile</Link>
+        <Link className={style.profileLinkModal} to={`/users/${user?._id}`}>View Profile</Link>
     </div>)
 }
 
@@ -146,20 +146,13 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
 
     return (
         <div className={style.calendar}>
+            <div className={style.calendarTitleBar}>
             <h1>{calendar.name}</h1>
-            {user !== null && user.followsDiet && user.followsDiet.diet !== calendar._id && 
-            <button onClick={()=>{
-                if (calendar._id && currentUser.user?.email){
-                    followCalendar(calendar._id, currentUser.user.email);
-                }
-                }}>Make this your diet
-            </button>
-            }
-            <button onClick={() => {
+            <button className={style.followButton}onClick={() => {
                 navigate('/editor/' + calendar._id);
             }}>Edit diet</button>
-            <h2>Creator: {owner?.username ?? "No owner"}</h2>
-            <Link to={`/profile/${owner?._id}`}>View Profile</Link>
+            </div>
+            <h2>Created by <Link to={`/profile/${owner?._id}`}>{owner?.username ?? "No owner"}</Link></h2>
             <div className={style.tags}>
                 <h3>Tags: </h3>
                 {calendar.tags?.map((t, idx) => <p key={idx}>{t}</p>)}
@@ -173,7 +166,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
 
             <div className={`${listOpen ? style.modalOpen : style.modalClosed}`}>
                 <div className={style.modalContainer}>
-                    <button className={style.closeButton} onClick={() => setListOpen(false)}> x </button>
+                <div className={style.exitModal} onClick={() => setListOpen(false)}></div>
                     <div className={style.followersList}>
                         <h3>Followers</h3>
                         {calendar.followedBy?.map((f, idx) => <FollowerProfileShort id={f} key={idx}/>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
@@ -192,6 +185,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             </div>
             <DetailedDay isOpen={dayDetails.isOpen} setDetails={setDayDetails}
                 details={dayDetails.index >= 0 && dayDetails.index < calendar.days.length ? calendar.days[dayDetails.index] : undefined}/>
+            {/* {user !== null && user.followsDiet && user.followsDiet.diet !== calendar._id && */}
             <button
                 className={style.followButton} 
                 onClick={()=>{
@@ -199,6 +193,7 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                     followCalendar(calendar._id, currentUser.user.email);
                 }
                 }}>Make this your diet</button>
+            {/* } */}
         </div>
     );
 }

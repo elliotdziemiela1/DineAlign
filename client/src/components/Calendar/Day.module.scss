@@ -61,20 +61,31 @@
     flex-direction: column;
     align-items: center;
     padding: 7px;
+    font-family: 'Montserrat', sans-serif;
 }
 
-.dayContent h1 {
-    margin: 10px 0;
+.dayContent h3 {
+    font-family: 'Montserrat', sans-serif;
 }
 
 .dayContent div {
+    width: 50rem;
     background-color: blanchedalmond;
     padding: 20px;
+    font-weight: bold;
+    border: 1px solid #ffd591;
+    border-radius: 20px;
+    margin: 10px;
+}
+
+.dayContent p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight:300;
 }
 
 .exitModal {
     position: fixed;
-    z-index: 20;
+    z-index: 100;
     right: 8%;
     top: 8%;
     cursor: pointer;
