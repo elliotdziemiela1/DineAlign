@@ -198,8 +198,8 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
             </div>
 
             <div className={`${listOpen ? style.modalOpen : style.modalClosed}`}>
-                <div className={style.modalContainer}>
                 <div className={style.exitModal} onClick={() => setListOpen(false)}></div>
+                <div className={style.modalContainer}>
                     <div className={style.followersList}>
                         <h3>Followers</h3>
                         {calendar.followedBy?.map((f, idx) => <FollowerProfileShort id={f} key={idx}/>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}

@@ -118,7 +118,8 @@
     transform: translate(-50%, -50%); /* Center the modal */
     width: 90%;
     max-width: 75vw;
-    height: 80%;
+    max-height: 80%;
+    // height: 80%;
     // max-width: 600px;
     background-color: white; /* Background for the modal */
     border-radius: 15px;
@@ -130,6 +131,7 @@
     z-index: 100;
     overflow: hidden;
 }
+  
 
 .closeButton {
     position: absolute; /* Position it relative to the modal container */
@@ -284,8 +286,8 @@ border-radius: 5px; /* Optional: Make it look nice */
 .exitModal {
     position: fixed;
     z-index: 200;
-    right: -8%;
-    top: -25%;
+    right: 8%;
+    top: 25%;
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -294,8 +296,9 @@ border-radius: 5px; /* Optional: Make it look nice */
     background-size: contain;
     background-color: transparent;
     filter: invert(99%) sepia(1%) saturate(609%) hue-rotate(194deg) brightness(104%) contrast(100%);
-
 }
+
+
 .thumb {
     width: 25px;
     height: auto;
