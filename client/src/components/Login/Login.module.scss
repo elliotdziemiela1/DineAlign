@@ -1,0 +1,57 @@
+.container {
+    width: auto;
+    position: relative;
+    border: solid red;
+    box-sizing: border-box;
+    height: calc(100vh - 60px);
+    
+}
+
+.page {
+    border: 1px solid #ffd591;
+    border-radius: 20px;
+    box-sizing: border-box;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffd591;
+    flex-direction: column;
+    width: 75%;
+    height: 50%;
+}
+
+.pseudologo {
+    font-size: 3em;
+    align-items: center;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    align-content: space-evenly;
+}
+
+
+.signInButton {
+    background: linear-gradient(to right, #ffaa43, #ff9717);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 10px;
+}
+
+.inputBox {
+    display: flex;
+    flex-direction: column;
+}
