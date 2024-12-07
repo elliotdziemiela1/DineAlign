@@ -30,6 +30,12 @@ interface TentativeDay {
     mealEntries: Meal[];
 }
 
+enum FetchResult {
+    LOADING=0,
+    SUCCESS=1,
+    FAIL=2,
+}
+
 // If null, creating a new calendar, else, updating an existing calendar id if the owner matches the current owner
 // Otherwise, a copy is created under the new owner
 // Assume the existing calendar id exists 
@@ -39,11 +45,7 @@ export default function Editor() {
         if (calendar.days.length === 0) {
             console.log("Calendar is missing days!");
         } else {
-            if (userDetails.user?.email && userDetails.user.email === user.email) {
-                await createCalendar(calendar, existingCalendarId);
-            } else {
-                await createCalendar(calendar, null);
-            }
+            const result = await createCalendar(calendar);
             
         }
     }
@@ -51,49 +53,70 @@ export default function Editor() {
     const existingCalendarId = params.id ?? null;
     const [calendar, setCalendar] = useState<CalendarDetails>(EmptyCalendar);
     const [user, setUser] = useState<User>(EmptyUser);
-    const [isCalendarLoaded, setIsCalendarLoaded] = useState(false);
+    const [fetchResult, setFetchResult] = useState<FetchResult>(FetchResult.LOADING);
     const userDetails = useContext(AuthContext);
 
-    console.log("Existing calendar id:", existingCalendarId);
-    console.log(user._id, calendar.owner, user._id === calendar.owner);
     useEffect(() => {
         async function fetcher() {
             var userResult: User | null = null;
+            var currentUser: User = EmptyUser;
             if (userDetails.user !== null) {
                 userResult = await fetchUserByEmail(userDetails.user.email as string);
                 if (userResult !== null) {
                     console.log("Fetched user.");
+                    currentUser = userResult;
                     setUser(userResult);
+                } else {
+                    setFetchResult(FetchResult.FAIL);
+                    return;
                 }
+            } else {
+                setFetchResult(FetchResult.FAIL);
+                return;
             }
+
+            // User must exist past this point
             if (existingCalendarId !== null) {
                 var calendarResult = await fetchCalendar(existingCalendarId as string);
                 if (calendarResult !== null) {
                     console.log("Fetched existing calendar to edit");
-                    if (userResult !== null) {
-                        calendarResult.owner = userResult._id;
+                    // If the user is the owner of the calendar, let the calendar result id stay
+                    // If the user is not the owner of the calendar but the calendar is public, remove the calendar id to clone a new calendar
+                    // If the user is not the owner and the calendar is private, do not set the calendar
+                    if (currentUser._id !== calendarResult.owner && calendarResult.privacy === Privacy.PRIVATE) {
+                        setFetchResult(FetchResult.FAIL);
+                        return;
+                    } else if (currentUser._id !== calendarResult.owner && calendarResult.privacy !== Privacy.PRIVATE) {
+                        console.log("Cloning calendar!");
+                        calendarResult.owner = currentUser._id;
+                        calendarResult.followedBy = [];
+                        calendarResult.ratings = [];
                         delete calendarResult._id;
                     }
                     setCalendar(calendarResult);
+                    setFetchResult(FetchResult.SUCCESS);
+                } else {
+                    setFetchResult(FetchResult.FAIL);
                 }
             } else {
+                // Make a blank calendar
                 setCalendar(c => ({...c, owner: userResult?._id ?? ''}));
+                setFetchResult(FetchResult.SUCCESS);
             }
-            setIsCalendarLoaded(true);
         }
         fetcher();
     }, [existingCalendarId, userDetails.user]);
 
-    if (userDetails.loading || !isCalendarLoaded) {
+    if (userDetails.loading || fetchResult === FetchResult.LOADING) {
         return (
             <div>
                 Loading...
             </div>
         )
-    } else if (calendar.privacy === Privacy.PRIVATE && !userDetails.loading && calendar.owner !== user._id) {
+    } else if (fetchResult === FetchResult.FAIL) {
         return (
             <div>
-                This user has privated their calendar!
+                This user has privated their calendar, or the calendar does not exist!
                 <Link to="/home">Go home.</Link>
             </div>
         )
