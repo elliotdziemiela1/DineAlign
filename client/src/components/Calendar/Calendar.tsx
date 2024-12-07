@@ -212,14 +212,14 @@ export default function Calendar({ user, calendarId }: {user: User | null, calen
                         {calendar.followedBy?.map((f, idx) => <FollowerProfileShort id={f} key={idx}/>)} {/* Assuming f is a userID, replace with api call to get f's name and profile pic*/}
                     </div>
                     <div className={style.ratingsList}>
+                        <h3>Leave a review</h3>
                         {(currentUser.user?.email) &&
                         <div className={style.ratingEditor}>
-                            <h3>Leave a review</h3>
+                            {newRating === Thumb.UP && <img src={thumbsUp} className={style.thumb}></img>}
+                            {newRating === Thumb.DOWN && <img src={thumbsDown} className={style.thumb}></img>}
                             <input type="review" name="review" value={newReview} placeholder="Review" onChange={(e) => setNewReview(e.target.value)}/>
                             <button onClick={() => setNewRating(Thumb.UP)}><img src={thumbsUp} className={style.thumb}></img></button>
                             <button onClick={() => setNewRating(Thumb.DOWN)}><img src={thumbsDown} className={style.thumb}></img></button>
-                            {newRating === Thumb.UP && <img src={thumbsUp} className={style.thumb}></img>}
-                            {newRating === Thumb.DOWN && <img src={thumbsDown} className={style.thumb}></img>}
                             <button onClick={() => { {handleAddRating();}}}>Add Rating</button>
                         </div>}
                         {!currentUser.user?.email && <p>Log in to leave review</p>}
