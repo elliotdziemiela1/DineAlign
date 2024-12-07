@@ -46,6 +46,20 @@ export async function fetchUserByUsername(username: string): Promise<User | null
     return user ? parseDates(user) : null;
 }
 
+export async function addRating(calId:string, review:string, thumb:number, ownerEmail:string) {
+    let cal = await fetchCalendar(calId);
+    let owner = await fetchUserByEmail(ownerEmail);
+    if (cal?.ratings && owner?._id){
+        let newRating = {
+            thumb: thumb,
+            review: review,
+            owner: owner._id
+        }
+        cal.ratings.unshift(newRating)
+        axios.put(`/api/calendars/${calId}`, cal)
+    }
+}
+
 function parseDates(user: User): User {
     if (user?.followsDiet?.dietStarted) {
         user.followsDiet.dietStarted = new Date(user.followsDiet.dietStarted);

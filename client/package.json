@@ -21,7 +21,11 @@
         "@types/react-dom": "^18.3.1",
         "web-vitals": "^4.2.4"
     },
+<<<<<<< HEAD
     "proxy": "http://localhost:5050",
+=======
+    "proxy": "http://localhost:5050/",
+>>>>>>> ratings
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
