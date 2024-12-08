@@ -1,117 +1,169 @@
-.calendarBody {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(auto-fill, 200px);
-    gap: 20px;
+// General reset and base styles
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f8f9fa;
+    color: #343a40;
 }
 
+// Calendar container
 .calendar {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+// Title and description styling
 .name {
     display: flex;
-    justify-items: stretch;
-    padding-top: 10px;
-    padding-bottom: 5px;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    margin-bottom: 10px;
 }
 
 .name input {
-    border-radius: 0.5rem;
+    flex: 1;
+    margin-left: 10px;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
 }
 
 .creator {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 10px;
 }
 
+// Privacy section
 .privacy {
     display: flex;
     align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.privacy > p {
-    font-weight: bold;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .privacy_option {
-    font-weight: bold;
+    margin-left: 10px;
+    padding: 8px 12px;
+    background-color: #17a2b8;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    user-select: none;
-    border: 1px solid;
-    padding: 3px;
-    border-radius: 0.5rem;
+    transition: background-color 0.2s;
 }
 
-.description {
-    display: flex;
-    align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
+.privacy_option:hover {
+    background-color: #138496;
 }
 
-.description > p {
-    font-weight: bold;
-}
-
+// Tags
 .tags {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
-.tag_header, .diet {
+.tag_header {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
 }
 
-.tag_header > p, .diet > p {
-    font-weight: bold;
+.add_tag {
+    background-color: #28a745;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add_tag:hover {
+    background-color: #218838;
 }
 
 .tag_list {
-    padding-top: 5px;
-}
-
-.add_tag, .add_day {
-    cursor: pointer;
-    user-select: none;
-    border: 1px solid;
-    border-radius: 0.5rem;
-    padding: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .tag {
-    border: 1px solid;
-    border-radius: 0.5rem;
-    padding: 1px 5px;
+    background-color: #f8f9fa;
+    color: #343a40;
+    border: 1px solid #ced4da;
+    padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
-    user-select: none;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .tag:hover {
-    background-color: gray;
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+// Day editor
+.diet {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.add_day {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add_day:hover {
+    background-color: #0056b3;
+}
+
+.calendarBody {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
 }
 
 .day {
     display: flex;
     flex-direction: column;
-    background-color: aqua;
-    padding: 5px;
-    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1f3f5;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.2s, background-color 0.2s;
 }
 
-.modalClosed {
-    display: none;
+.day:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+// Modals
 .modalOpen {
     position: fixed;
     top: 0;
@@ -121,11 +173,16 @@
     align-items: center;
     height: 100vh;
     width: 100vw;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 20;
 }
 
-.exitModal {
+.modalClosed {
+    display: none;
+}
+
+
+.modalOpen .exitModal {
     position: fixed;
     z-index: 20;
     right: 8%;
@@ -133,6 +190,7 @@
     cursor: pointer;
     width: 40px;
     height: 40px;
+    max-width: 40px;
     background-image: url("../../assets/x_circle.svg");
     background-position: center;
     background-size: contain;
@@ -140,6 +198,27 @@
     filter: invert(99%) sepia(1%) saturate(609%) hue-rotate(194deg) brightness(104%) contrast(100%);
 }
 
-.hidden {
-    display: none;
+.modalOpen > div {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+}
+
+// Button styling
+input[type="button"] {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+input[type="button"]:hover {
+    background-color: #0056b3;
 }

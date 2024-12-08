@@ -295,7 +295,7 @@ function MealEditor({day, setDay}: MealEditorProps) {
             </div>
             
             <div className={`${style.modal} ${modal ? style.modalOpen : style.modalClosed}`}>
-                <div className={style.exitModal} onClick={() => setModal(false)}>X</div>
+                <div className={style.exitModal} onClick={() => setModal(false)}></div>
                 <p>Meal name:&nbsp;</p>
                 <input value={meal.name} onChange={(e) => setMeal({...meal, name: e.target.value})}/>
                 <p>Meal time:&nbsp;</p>
