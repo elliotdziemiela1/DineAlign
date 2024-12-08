@@ -211,7 +211,7 @@ function DayEditor({calendar, setCalendar}: DayEditorProps) {
             
             <div className={`${style.modal} ${day.open ? style.modalOpen : style.modalClosed}`}>
                 <div className={style.exitModal} onClick={() => updateEditor(-1)}></div>
-                <div>
+                <div className={style.dayEditor}>
                     <p>Day {day.index + 1}</p>
                     <p>Description:&nbsp;</p>
                     <input value={day.description} onChange={(e) => setDay({...day, description: e.target.value})}/>
@@ -279,15 +279,15 @@ function MealEditor({day, setDay}: MealEditorProps) {
 
     return (
         <>
-            <div onClick={() => setModal(true)}>Add meal entry</div>
+            <div className={style.addMealEntry} onClick={() => setModal(true)}>Add meal entry</div>
             <p>Meals:&nbsp;</p>
-            <div>
+            <div className={style.meals}>
                 {day.mealEntries.map((mealEntry, idx) => {
                     return (
-                        <div key={idx}>
+                        <div className={style.mealEntry}key={idx}>
                             <h3>{mealEntry.name}</h3>
                             <p>{`Time of day: ${mealEntry.time}`}</p>
-                            {!!mealEntry.description && <p>{mealEntry.description}</p>}
+                            {!!mealEntry.description && <p>{`Description: ${mealEntry.description}`}</p>}
                             {!!mealEntry.link && <a href={mealEntry.link}>Source</a>}
                         </div>
                     )
@@ -296,15 +296,17 @@ function MealEditor({day, setDay}: MealEditorProps) {
             
             <div className={`${style.modal} ${modal ? style.modalOpen : style.modalClosed}`}>
                 <div className={style.exitModal} onClick={() => setModal(false)}></div>
-                <p>Meal name:&nbsp;</p>
-                <input value={meal.name} onChange={(e) => setMeal({...meal, name: e.target.value})}/>
-                <p>Meal time:&nbsp;</p>
-                <input value={meal.time} onChange={(e) => setMeal({...meal, time: e.target.value})}/>
-                <p>Description:&nbsp;</p>
-                <input value={meal.description} onChange={(e) => setMeal({...meal, description: e.target.value})}/>
-                <p>Link:&nbsp;</p>
-                <input value={meal.link} onChange={(e) => setMeal({...meal, link: e.target.value})}/>
-                <input type="button" onClick={() => validateMeal()} value="Create Meal"/>
+                <div className={style.mealEditor}>
+                    <p>Meal name:&nbsp;</p>
+                    <input value={meal.name} onChange={(e) => setMeal({...meal, name: e.target.value})}/>
+                    <p>Meal time:&nbsp;</p>
+                    <input value={meal.time} onChange={(e) => setMeal({...meal, time: e.target.value})}/>
+                    <p>Description:&nbsp;</p>
+                    <input value={meal.description} onChange={(e) => setMeal({...meal, description: e.target.value})}/>
+                    <p>Link:&nbsp;</p>
+                    <input value={meal.link} onChange={(e) => setMeal({...meal, link: e.target.value})}/>
+                    <input type="button" onClick={() => validateMeal()} value="Create Meal"/>
+                </div>
             </div>
         </>
         
