@@ -216,8 +216,9 @@ function DayEditor({calendar, setCalendar}: DayEditorProps) {
                     <p>Description:&nbsp;</p>
                     <input value={day.description} onChange={(e) => setDay({...day, description: e.target.value})}/>
                     <MealEditor day={day} setDay={setDay}/>
+                
+                    <input type="button" onClick={() => {setDay({...day, open: false}); modifyDays(); console.log("Day is:", day)}} value="Create day"/>
                 </div>
-                <input type="button" onClick={() => {setDay({...day, open: false}); modifyDays(); console.log("Day is:", day)}} value="Create day"/>
             </div>
         </>
         

@@ -227,7 +227,13 @@ input[type="button"]:hover {
 .dayEditor {
     display: flex;
     flex-direction: column;
-    gap: 10px
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+    gap: 10px;
+    overflow: hidden;
+    // max-width: 900px;
+    overflow-y: scroll;
 }
 
 .addMealEntry {
@@ -243,22 +249,26 @@ input[type="button"]:hover {
 
 .meals {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    padding: 0;
 }
 
 .mealEditor {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    scroll-padding-left: 100px;
 }
 
 .mealEntry {
-    max-width: 200px;
+    max-width: 500px;
 }
 
 .mealEntry p, h3{
     margin: 0 10px;
-    max-width: 200px;
+    max-width: 500px;
     word-wrap: break-word; /* Allow the text to wrap onto the next line if it overflows */
     overflow-wrap: break-word
 }
