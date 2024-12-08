@@ -26,5 +26,7 @@ export default function CalendarPage() {
         fetcher();
     }, [userDetails]);
 
-    return <div className={styles.container}><Calendar personalizeUser={null} currentUser={user} calendarId={id ?? ""}></Calendar></div>
+    return <div className={styles.container}>
+        <Calendar personalizeUser={null} currentUser={user} calendarId={id ?? ""}/>
+    </div>
 }

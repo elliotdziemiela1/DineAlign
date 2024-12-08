@@ -143,7 +143,7 @@ export default function Calendar({ personalizeUser, currentUser, calendarId, upd
     useEffect(() => {
         async function fetchCal() {
             if (calendarId) {
-                let cal = await fetchCalendar(calendarId);
+                let cal = await fetchCalendar(calendarId, currentUser?._id);
                 if (cal !== null) {
                     if (cal.owner) {
                         let owner = await fetchUserByID(cal.owner);
@@ -156,7 +156,7 @@ export default function Calendar({ personalizeUser, currentUser, calendarId, upd
             }
         }
         fetchCal();
-    }, [calendarId]);
+    }, [calendarId, currentUser?._id]);
 
     
     const startDate = personalizeUser?.followsDiet?.dietStarted ?? new Date();
