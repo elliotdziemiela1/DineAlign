@@ -249,9 +249,11 @@ function TagEditor({calendar, setCalendar}: TagEditorProps) {
             </div>
             <div className={`${style.modal} ${modal ? style.modalOpen : style.modalClosed}`}>
                 <div className={style.exitModal} onClick={() => setModal(false)}></div>
-                <p>Tag name:&nbsp;</p>
-                <input value={tagName} onChange={(e) => setTagName(e.target.value)}/>
-                <input type="button" onClick={() => {setModal(false); setCalendar({...calendar, tags: [...calendar.tags, tagName]})}} value="Create Tag"/>
+                <div className={style.tagEditor}>
+                    <p>Tag name:&nbsp;</p>
+                    <input value={tagName} onChange={(e) => setTagName(e.target.value)}/>
+                    <input type="button" onClick={() => {setModal(false); setCalendar({...calendar, tags: [...calendar.tags, tagName]})}} value="Create Tag"/>
+                </div>
             </div>
         </>
         

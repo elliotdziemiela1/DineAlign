@@ -140,7 +140,7 @@ body {
 
 .calendarBody {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     gap: 20px;
     width: 100%;
 }
@@ -232,6 +232,7 @@ input[type="button"]:hover {
     margin: 50px;
     gap: 10px;
     overflow: hidden;
+    max-height: 80vh;
     // max-width: 900px;
     overflow-y: scroll;
 }
@@ -251,7 +252,6 @@ input[type="button"]:hover {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    
     padding: 0;
 }
 
@@ -259,7 +259,6 @@ input[type="button"]:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    scroll-padding-left: 100px;
 }
 
 .mealEntry {
@@ -269,6 +268,19 @@ input[type="button"]:hover {
 .mealEntry p, h3{
     margin: 0 10px;
     max-width: 500px;
-    word-wrap: break-word; /* Allow the text to wrap onto the next line if it overflows */
+    // word-wrap: break-word; /* Allow the text to wrap onto the next line if it overflows */
     overflow-wrap: break-word
+}
+
+.tagEditor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+    gap: 10px;
+    overflow: hidden;
+    max-height: 80vh;
+    // max-width: 900px;
+    overflow-y: scroll;
 }
