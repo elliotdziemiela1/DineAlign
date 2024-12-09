@@ -1,0 +1,15 @@
+{
+    "projects": [
+      {
+        "src": "client/package.json",
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "client/build"
+        }
+      },
+      {
+        "src": "server/server.js",
+        "use": "@vercel/node"
+      }
+    ]
+}
