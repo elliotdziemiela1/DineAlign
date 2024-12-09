@@ -46,7 +46,6 @@ export default function SearchUsers () {
                         <Link to={`/profile/${u._id}`} className={styles.profileRedirectButton}>View Profile</Link>
                     </div>
                 </div>
-                
             </li>)}
         </ul>
         
