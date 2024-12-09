@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { User } from "../Profile/Profile";
 import { fetchAllCalendars, fetchAllUsers } from "../../services/fetchData";
 import styles from "./SearchDiets.module.scss"
+import dietIconImg from "./dietIcon.png"
 import { CalendarDetails } from "../Calendar/Calendar";
 
 
@@ -31,9 +32,24 @@ export default function SearchDiets () {
         <ul>
             {sortedDiets?.map((d, idx) => 
             <li key={idx}>
-                <div>
-                    <h3>{d.name}</h3>
-                    <Link to={`/calendar/${d._id}`}>View Calendar</Link>
+                <div className={styles.dietIcon}>
+                    <img src={dietIconImg} alt="Diet"/>
+                </div>
+                <div className={styles.dietInfo}>
+                    <div className={styles.dietText}>
+                        <h1>{d.name}</h1>
+                        {d.owner}
+                        <div className={styles.tagBoxGroup}>
+                            {d.tags?.map((t) => (
+                                <div className={styles.tagBox}>
+                                    <p>{t}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className={styles.dietRedirect}>
+                    <Link to={`/calendar/${d._id}`} className={styles.dietRedirectButton}>View Calendar</Link>    
+                    </div>
                 </div>
             </li>)}
         </ul>

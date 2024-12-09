@@ -13,9 +13,13 @@ function NavBar() {
         <>
             <div className={styles.navbar}>
                 <p className={styles.logo} onClick={() => navigate("/home")}>Dine Align</p>
-                <input type="text" placeholder="Search.." className={styles.search} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
-                <Link to={searchQuery ? `/searchUsers/${searchQuery}` : "#"} className={styles.navLink}>Search Users</Link>
-                <Link to={searchQuery ? `/searchDiets/${searchQuery}` : "#"} className={styles.navLink}>Search Diets</Link>
+                <div className={styles.sbar}>
+                    <input type="text" placeholder="Search.." className={styles.search} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+                    <div className={styles.searchbutton}>
+                        <Link to={searchQuery ? `/searchUsers/${searchQuery}` : "#"} className={styles.navLink}>Search Users</Link>
+                        <Link to={searchQuery ? `/searchDiets/${searchQuery}` : "#"} className={styles.navLink}>Search Diets</Link>
+                    </div>
+                </div>
                 <Link to={"/editor"} className={styles.navLink}>Create Diet</Link>
                 <Link to={"/profile"} className={styles.profile}>Profile</Link>
                 {!!user.user ? <button type="button" onClick={() => {signOut(); window.location.reload();}} className={styles.login}>Sign Out</button> : 
