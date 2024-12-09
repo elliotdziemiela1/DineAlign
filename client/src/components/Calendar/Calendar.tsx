@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../..";
+import React, { useEffect, useState } from "react";
 import style from './Calendar.module.scss'
 import Day, { CurrentDay, DetailedDay } from './Day'
-import { EmptyUser, User } from '../Profile/Profile';
+import { User } from '../Profile/Profile';
 import { DayOfTheWeek, getDayOfWeek, getEnumFromDate } from '../../utils/CalendarUtils';
-import { addRating, fetchCalendar, fetchUserByEmail, fetchUserByID, followCalendar } from "../../services/fetchData";
+import { addRating, fetchCalendar, fetchUserByID, followCalendar } from "../../services/fetchData";
 import { Link, useNavigate } from 'react-router-dom';
 import thumbsUp from "../../assets/thumbsUp.svg";
 import thumbsDown from "../../assets/thumbsDown.svg";
@@ -115,7 +114,7 @@ function FollowerProfileShort ({id}: {id:string}){
             }
         }
         fetcher();
-    }, [])
+    }, [id]);
 
     return (<div className={style.followerProfileShort}>
         <p>{user?.username}</p>
@@ -156,7 +155,7 @@ export default function Calendar({ personalizeUser, currentUser, calendarId, upd
             }
         }
         fetchCal();
-    }, [calendarId, currentUser?._id]);
+    }, [calendarId, currentUser]);
 
     
     const startDate = personalizeUser?.followsDiet?.dietStarted ?? new Date();
@@ -164,13 +163,13 @@ export default function Calendar({ personalizeUser, currentUser, calendarId, upd
     const currentTime = new Date();
     const currentDayIndex = Math.floor(((Math.floor(currentTime.getTime() / 86400000) * 86400000) - (Math.floor(startDate.getTime() / 86400000) * 86400000)) / 86400000) % calendar.days.length;
 
-    async function refresh (){
-        if (calendar._id) {
-            let cal = await fetchCalendar(calendar._id)
-            if (cal)
-                setCalendar(cal);
-        }
-    }
+    // async function refresh (){
+    //     if (calendar._id) {
+    //         let cal = await fetchCalendar(calendar._id)
+    //         if (cal)
+    //             setCalendar(cal);
+    //     }
+    // }
 
     async function handleAddRating(){
         if (calendar._id && currentUser?.email && newReview.length <= MAX_REVIEW_CHARS){
@@ -180,7 +179,7 @@ export default function Calendar({ personalizeUser, currentUser, calendarId, upd
                 setCalendar(cal);
         }
     }
-    console.log(calendar.name, currentUser);
+    console.log(calendar);
     return (
         <div className={style.calendar}>
             <div className={style.calendarTitleBar}>
@@ -241,8 +240,8 @@ export default function Calendar({ personalizeUser, currentUser, calendarId, upd
             {currentUser !== null && calendar._id !== null && 
                 ((!!currentUser.followsDiet?.diet && currentUser.followsDiet.diet !== calendar._id) || (!currentUser.followsDiet)) &&
             <button className={style.followButton} onClick={async () => {
-                if (calendar._id && currentUser.email) {
-                    const newDiet = await followCalendar(calendar._id, currentUser.email);
+                if (calendar._id && currentUser) {
+                    const newDiet = await followCalendar(calendar._id, currentUser);
                     if (newDiet !== undefined) {
                         if (updateUser !== undefined) {
                             updateUser({...currentUser, followsDiet: newDiet});

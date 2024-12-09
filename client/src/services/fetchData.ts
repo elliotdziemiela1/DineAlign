@@ -17,8 +17,8 @@ export async function fetchCalendar(id: string, userId?: string): Promise<Calend
     
 }
 
-export async function followCalendar(calId: string, userEmail: string): Promise<DietDetails | undefined> {
-    const user = await fetchUserByEmail(userEmail);
+export async function followCalendar(calId: string, user: User): Promise<DietDetails | undefined> {
+    //const user = await fetchUserByEmail(userEmail);
     const calendar = await fetchCalendar(calId);
     if (user && calendar) {
         // Remove self from old calendar's followedBy if exists
@@ -39,6 +39,7 @@ export async function followCalendar(calId: string, userEmail: string): Promise<
         await axios.put(`/api/users/${user._id}`,user);
         
         calendar.followedBy = [...calendar.followedBy, user._id];
+        await axios.put("/api/calendars/" + calId, calendar);
         return user.followsDiet;
     } else {
         return undefined;
