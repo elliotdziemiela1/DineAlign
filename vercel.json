@@ -1,5 +1,8 @@
 {
     "version": 2,
+    "rewrites": [
+        { "source": "/(.*)", "destination": "/index.html" }
+    ],
     "builds": [
       {
         "src": "client/package.json",
@@ -21,7 +24,7 @@
       },
       {
         "src": "/(.*)",
-        "dest": "/client/build/index.html"
+        "dest": "/client/$1"
       }
     ]
 }
