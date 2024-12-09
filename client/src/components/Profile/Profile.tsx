@@ -97,7 +97,7 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    <div className={style.createdDietsSection}>
+                    <div className={style.currentDietSection}>
                         <h2>{user.username}'s Created Diets</h2>
                         <div className={style.createdDiets}>
                             {user.dietsCreated.length === 0 ? 
