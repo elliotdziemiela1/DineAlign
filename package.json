@@ -9,6 +9,7 @@
   "scripts": {
     "client": "npm start --prefix client",
     "server": "npm start --prefix server",
+    "build": "react-scripts build",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "devDependencies": {
