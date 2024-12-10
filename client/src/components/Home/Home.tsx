@@ -92,6 +92,8 @@ export default function Home() {
                 if (result !== null && !!result.followsDiet) {
                     const calendarResult = await fetchCalendar(result.followsDiet.diet as string);
                     setCalendar(calendarResult);
+                }
+                if (result !== null){
                     setUser(result);
                 }
             }
@@ -140,7 +142,7 @@ export default function Home() {
         if (display === MenuDisplay.FEED) {
             fetchAllDays();
         }
-    }, [user.following, display]);
+    }, [user.following, display, user]);
 
     return (
         <div className={styles.layout}>
