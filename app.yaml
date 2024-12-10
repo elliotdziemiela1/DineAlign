@@ -1,0 +1,4 @@
+runtime: nodejs21
+
+instance_class: B1
+

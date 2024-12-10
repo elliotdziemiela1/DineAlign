@@ -9,7 +9,9 @@
   "scripts": {
     "client": "npm start --prefix client",
     "server": "npm start --prefix server",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "gcp-build": "./buildapp.sh",
+    "start": "npm start --prefix server"
   },
   "devDependencies": {
     "@types/express": "^5.0.0"
