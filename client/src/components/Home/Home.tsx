@@ -144,10 +144,10 @@ export default function Home() {
 
     return (
         <div className={styles.layout}>
-            {<div className={styles.menu}>
+            {/* {<div className={styles.menu}>
                 <div onClick={() => setDisplay(MenuDisplay.FEED)}>Feed</div>
                 <div onClick={() => setDisplay(MenuDisplay.TRENDING)}>Trending Diets</div>
-            </div>}
+            </div>} */}
             <div className={styles.feed}>
                 {showFeed()}
             </div>

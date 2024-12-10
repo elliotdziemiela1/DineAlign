@@ -69,12 +69,12 @@ export default function Profile() {
     
     return (
         <div className={style.container}>
-            {/* <!-- Cover Photo and Profile Picture --> */}
+            {/* <!-- Cover Photo and Profile Picture -->
             <div className={style.coverPhoto}>
                 <div className={style.profilePhoto}>
                     <img src={defaultPfp} alt="Profile"/>
                 </div>
-            </div>
+            </div> */}
 
             {/* <!-- User Info Section --> */}
             <div className={style.userInfo}>
