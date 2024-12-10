@@ -116,3 +116,13 @@ body {
 }
 
 
+.createDietNow {
+    background-color: #28a745;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    width: 200px;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}

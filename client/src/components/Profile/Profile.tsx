@@ -109,7 +109,7 @@ export default function Profile() {
                                 return <div className={style.createdDiet}>
                                 <Calendar personalizeUser={null} currentUser={user} calendarId={d} updateUser={setUser}/>
                                 </div>})}
-                            <div onClick={() => navigator("/editor")}>
+                            <div className={style.createDietNow} onClick={() => navigator("/editor")}>
                                 Create a diet now!
                             </div>
                         </div>

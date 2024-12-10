@@ -159,8 +159,10 @@ export default function Editor() {
             
             <input type="button" onClick={() => publishCalendar()} value="Submit"/>
             <div className={`${error === '' ? style.modalClosed : style.modalOpen}`}>
-                {error}
-                <button type="button" onClick={() => setError('')}>OK!</button>
+                <div className={style.errorDisplay}>
+                    {error}
+                    <button type="button" onClick={() => setError('')}>OK!</button>
+                </div>
             </div>
         </div>
     );
