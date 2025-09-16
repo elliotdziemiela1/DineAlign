@@ -1,7 +1,2 @@
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm run build`
-
-### `npm run dev`
+Demonstration video: https://mediaspace.illinois.edu/media/t/1_3bls85j3 .
+Made using React, Express, and Axios, Dine Align is a website that allows users to create diet calendars and share them with eachother. It has a search feature, a calendar editor, profile feature, and a daily diet tracker that parses through your current calendar to get the day corresponding to the current day of the week. This was made by a team of 4 including myself. I was tasked with developing the frontend, mainly using React, HTML, and CSS. I also wrote the Restful Api calls to our backend using Axios. 
