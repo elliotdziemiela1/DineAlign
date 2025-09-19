@@ -8,6 +8,7 @@ import { displayPrivacy, switchPrivacyOption } from "../../utils/CalendarUtils";
 import { createCalendar } from "../../services/postData";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { fetchCalendarDummy } from "../../services/fetchDummyData";
 
 interface DayEditorProps {
     calendar: CalendarDetails;
@@ -93,7 +94,7 @@ export default function Editor() {
 
             // User must exist past this point
             if (existingCalendarId !== null) {
-                var calendarResult = await fetchCalendar(existingCalendarId as string, currentUser._id);
+                var calendarResult = await fetchCalendarDummy(existingCalendarId as string, currentUser._id);
                 if (calendarResult !== null) {
                     console.log("Fetched existing calendar to edit");
                     // If the user is the owner of the calendar, let the calendar result id stay

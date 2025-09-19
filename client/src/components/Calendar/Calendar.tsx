@@ -7,6 +7,7 @@ import { addRating, fetchCalendar, fetchUserByID, followCalendar } from "../../s
 import { Link, useNavigate } from 'react-router-dom';
 import thumbsUp from "../../assets/thumbsUp.svg";
 import thumbsDown from "../../assets/thumbsDown.svg";
+import { fetchCalendarDummy } from "../../services/fetchDummyData";
 
 const MAX_REVIEW_CHARS = 700
 
@@ -142,7 +143,7 @@ export default function Calendar({ personalizeUser, currentUser, calendarId, upd
     useEffect(() => {
         async function fetchCal() {
             if (calendarId) {
-                let cal = await fetchCalendar(calendarId, currentUser?._id);
+                let cal = await fetchCalendarDummy(calendarId, currentUser?._id);
                 if (cal !== null) {
                     if (cal.owner) {
                         let owner = await fetchUserByID(cal.owner);
@@ -174,7 +175,7 @@ export default function Calendar({ personalizeUser, currentUser, calendarId, upd
     async function handleAddRating(){
         if (calendar._id && currentUser?.email && newReview.length <= MAX_REVIEW_CHARS){
             await addRating(calendar._id, newReview, newRating, currentUser.email);
-            let cal = await fetchCalendar(calendar._id)
+            let cal = await fetchCalendarDummy(calendar._id)
             if (cal)
                 setCalendar(cal);
         }

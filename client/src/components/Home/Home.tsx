@@ -6,6 +6,7 @@ import { fetchCalendar, fetchUserByID, fetchPopularCalendarIDs, fetchUserByEmail
 import { CalendarDetails, DayWithIndex, showCurrentDay } from "../Calendar/Calendar";
 import Calendar from "../Calendar/Calendar";
 import { getDayOfWeek } from "../../utils/CalendarUtils";
+import { fetchCalendarDummy, fetchPopularCalendarIDsDummy } from "../../services/fetchDummyData";
 
 export enum MenuDisplay {
     FEED = 0,
@@ -90,7 +91,7 @@ export default function Home() {
                 const result = await fetchUserByEmail(userDetails.user?.email);
                 console.log(result)
                 if (result !== null && !!result.followsDiet) {
-                    const calendarResult = await fetchCalendar(result.followsDiet.diet as string);
+                    const calendarResult = await fetchCalendarDummy(result.followsDiet.diet as string);
                     setCalendar(calendarResult);
                 }
                 if (result !== null){
@@ -105,7 +106,7 @@ export default function Home() {
     // TODO - fix popular calendars to grab all public calendars
     useEffect(() => {
         async function fetchPopCalendars() {
-            const popCalendarIDs = await fetchPopularCalendarIDs();
+            const popCalendarIDs = await fetchPopularCalendarIDsDummy();
             setPopularCalendarIDs(popCalendarIDs);
         }
         if (display === MenuDisplay.TRENDING) {
@@ -118,7 +119,7 @@ export default function Home() {
             const result = await fetchUserByID(userId);
             if (result !== null && result.followsDiet?.diet) {
                 //If user exists and follows diet, fetch calendar
-                const calendarResult = await fetchCalendar(result.followsDiet?.diet);
+                const calendarResult = await fetchCalendarDummy(result.followsDiet?.diet);
                 if (calendarResult !== null) {
                     //Store user's current day into the feed
                     const currentTime = new Date();
