@@ -1,7 +1,7 @@
 import { StrictMode, createContext, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import NavBar from './components/NavBar/NavBar';
 import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
@@ -40,21 +40,6 @@ root.render(
 // /editor contains the diet calendar editor
 // /search contains the searching and query page for searching users/calendars
 // /login handles signing in and/or signing up
-const router = createBrowserRouter(createRoutesFromElements([
-  <Route path="/" element={<NavBar/>}>
-    <Route index element={<Navigate to="/home" replace={true}/>}/>
-    <Route path="/home" element={<Home/>}/>
-    <Route path="/profile" element={<Authorize component={<Profile/>}/>}/>
-    <Route path="/editor" element={<Authorize component={<Editor/>}/>}/>
-    <Route path="/editor/:id" element={<Authorize component={<Editor/>}/>}/>
-    <Route path="/searchUsers/:query" element={<SearchUsers/>}/>
-    <Route path="/searchDiets/:query" element={<SearchDiets/>}/>
-    <Route path="/profile/:id" element={<Profile/>}/>
-    <Route path='/calendar/:id' element={<CalendarPage/>}/>
-    <Route path="/login" element={<Login/>}/>
-  </Route>,
-  <Route path="/*" element={<div>404 not found.</div>}/>
-]));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
@@ -79,7 +64,23 @@ function App() {
 
   return (
     <AuthContext.Provider value={user}>
-      <RouterProvider router={router}/>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<NavBar/>}>
+            <Route index element={<Navigate to="/home" replace={true}/>}/>
+            <Route path="home" element={<Home/>}/>
+            <Route path="profile" element={<Authorize component={<Profile/>}/>}/>
+            <Route path="editor" element={<Authorize component={<Editor/>}/>}/>
+            <Route path="editor/:id" element={<Authorize component={<Editor/>}/>}/>
+            <Route path="searchUsers/:query" element={<SearchUsers/>}/>
+            <Route path="searchDiets/:query" element={<SearchDiets/>}/>
+            <Route path="profile/:id" element={<Profile/>}/>
+            <Route path="calendar/:id" element={<CalendarPage/>}/>
+            <Route path="login" element={<Login/>}/>
+          </Route>
+          <Route path="*" element={<div>404 not found.</div>}/>
+        </Routes>
+      </HashRouter>
     </AuthContext.Provider>
   );
 }
