@@ -40,7 +40,7 @@ jobs:
           COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           docker build -t backend -f server/Dockerfile.backend server/
           docker tag backend:latest ${{ secrets.ECR_BACKEND_REPO }}:$COMMIT_SHA
-          docker tag frontend:latest ${{ secrets.ECR_FRONTEND_REPO }}:latest
+          docker tag backend:latest ${{ secrets.ECR_FRONTEND_REPO }}:latest
           docker push ${{ secrets.ECR_BACKEND_REPO }}:$COMMIT_SHA
           echo "BACKEND_IMAGE=${{ secrets.ECR_BACKEND_REPO }}:$COMMIT_SHA" >> $GITHUB_ENV
 
