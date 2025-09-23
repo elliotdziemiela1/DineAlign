@@ -34,7 +34,7 @@ jobs:
 
       - name: Build and Push Backend
         run: |
-          docker build -t backend -f server.Dockerfile.backend server/
+          docker build -t backend -f server/Dockerfile.backend server/
           docker tag backend:latest ${{ secrets.ECR_BACKEND_REPO }}:latest
           docker push ${{ secrets.ECR_BACKEND_REPO }}:latest
 
