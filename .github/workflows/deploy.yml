@@ -42,12 +42,35 @@ jobs:
           docker push ${{ secrets.ECR_BACKEND_REPO }}:$COMMIT_SHA
           echo "BACKEND_IMAGE=${{ secrets.ECR_BACKEND_REPO }}:$COMMIT_SHA" >> $GITHUB_ENV
 
+      # Register new frontend task definition
+      - name: Register Frontend Task Definition
+        run: |
+          sed "s|<IMAGE>|$FRONTEND_IMAGE|g" ecs/frontend-task-template.json > frontend-task-def.json
+          aws ecs register-task-definition --cli-input-json file://frontend-task-def.json
+
+      # Register new backend task definition
+      - name: Register Backend Task Definition
+        run: |
+          sed "s|<IMAGE>|$BACKEND_IMAGE|g" ecs/backend-task-template.json > backend-task-def.json
+          aws ecs register-task-definition --cli-input-json file://backend-task-def.json
+
+      # Update ECS services to use the *new* task definitions
       - name: Update ECS Frontend Service
         run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER }} \
-            --service ${{ secrets.ECS_FRONTEND_SERVICE }} --force-new-deployment
+          REVISION=$(aws ecs describe-task-definition \
+            --task-definition dine-align-frontend \
+            --query 'taskDefinition.revision' --output text)
+          aws ecs update-service \
+            --cluster ${{ secrets.ECS_CLUSTER }} \
+            --service ${{ secrets.ECS_FRONTEND_SERVICE }} \
+            --task-definition dine-align-frontend:$REVISION
 
       - name: Update ECS Backend Service
         run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER }} \
-            --service ${{ secrets.ECS_BACKEND_SERVICE }} --force-new-deployment
+          REVISION=$(aws ecs describe-task-definition \
+            --task-definition dine-align-backend \
+            --query 'taskDefinition.revision' --output text)
+          aws ecs update-service \
+            --cluster ${{ secrets.ECS_CLUSTER }} \
+            --service ${{ secrets.ECS_BACKEND_SERVICE }} \
+            --task-definition dine-align-backend:$REVISION
