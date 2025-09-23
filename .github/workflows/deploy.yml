@@ -58,19 +58,19 @@ jobs:
       - name: Update ECS Frontend Service
         run: |
           REVISION=$(aws ecs describe-task-definition \
-            --task-definition dine-align-frontend \
+            --task-definition Dine-Align-Frontend \
             --query 'taskDefinition.revision' --output text)
           aws ecs update-service \
             --cluster ${{ secrets.ECS_CLUSTER }} \
             --service ${{ secrets.ECS_FRONTEND_SERVICE }} \
-            --task-definition dine-align-frontend:$REVISION
+            --task-definition Dine-Align-Frontend:$REVISION
 
       - name: Update ECS Backend Service
         run: |
           REVISION=$(aws ecs describe-task-definition \
-            --task-definition dine-align-backend \
+            --task-definition Dine-Align-Backend \
             --query 'taskDefinition.revision' --output text)
           aws ecs update-service \
             --cluster ${{ secrets.ECS_CLUSTER }} \
             --service ${{ secrets.ECS_BACKEND_SERVICE }} \
-            --task-definition dine-align-backend:$REVISION
+            --task-definition Dine-Align-Backend:$REVISION
