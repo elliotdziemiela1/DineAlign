@@ -47,14 +47,14 @@ jobs:
 
       # Register new frontend task definition
       - name: Register Frontend Task Definition
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
           sed "s|<IMAGE>|$FRONTEND_IMAGE|g" ecs/frontend-task-template.json > frontend-task-def.json
           aws ecs register-task-definition --cli-input-json file://frontend-task-def.json
 
       # Register new backend task definition
       - name: Register Backend Task Definition
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
           sed "s|<IMAGE>|$BACKEND_IMAGE|g; s|<MONGO_URI>|$MONGO_URI|g" ecs/backend-task-template.json > backend-task-def.json
           aws ecs register-task-definition --cli-input-json file://backend-task-def.json
