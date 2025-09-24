@@ -9,15 +9,18 @@ var router = express.Router();
 dotenv.config({path: __dirname + "/../config.env"})
 
 const app = express();
-const port = process.env.PORT;
+const port = 3000;
 const path = require('path');
 
 app.get('/api', (req: Request, res: Response) => {
   res.send('Hello World!');
 })
-const uri = process.env.CONNECTION_URI;
+const uri = process.env.MONGO_URI;
 if (!uri){throw new Error("ERROR CONNNECTION UNDEFINED");}
-mongoose.connect(uri);
+mongoose.connect(uri)
+.then(() => console.log("Connected to MongoDB."))
+.catch((err) => console.log("MongoDB connection error: ", err));
+
 
 // app.get('/api', (req: Request, res: Response) => {
 //   res.append('Access-Control-Allow-Origin', ['*']);
@@ -48,6 +51,6 @@ app.get('*', function(req: Request, res: Response) {
   return res.sendFile(path.resolve(__dirname, '../clientbuild', 'index.html'));
 });
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Example app listening on port ${port}`)
 })

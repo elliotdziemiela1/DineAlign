@@ -2,7 +2,12 @@
     "containerDefinitions": [
         {
             "cpu": 0,
-            "environment": [],
+            "environment": [
+                {
+                    "name": "MONGO_URI",
+                    "value": "<MONGO_URI>"
+                }
+            ],
             "environmentFiles": [],
             "essential": true,
             "image": "182462215020.dkr.ecr.us-east-1.amazonaws.com/dine-align-backend-us-east-1",

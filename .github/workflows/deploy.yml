@@ -27,8 +27,6 @@ jobs:
           docker login --username AWS --password-stdin ${{ secrets.ECR_BACKEND_REPO }}
 
       - name: Build and Push Frontend
-        # ADD THIS LINE AS NEEDED: docker tag frontend:latest ${{ secrets.ECR_FRONTEND_REPO }}:$COMMIT_SHA
-        run: |
           COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           docker build -t frontend -f client/Dockerfile.frontend client/
           docker tag frontend:latest ${{ secrets.ECR_FRONTEND_REPO }}:latest
@@ -36,13 +34,12 @@ jobs:
           echo "FRONTEND_IMAGE=${{ secrets.ECR_FRONTEND_REPO }}:latest" >> $GITHUB_ENV
 
       - name: Build and Push Backend
-        # ADD THIS LINE AS NEEDED: docker tag backend:latest ${{ secrets.ECR_BACKEND_REPO }}:$COMMIT_SHA
-        run: |
           COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           docker build -t backend -f server/Dockerfile.backend server/
           docker tag backend:latest ${{ secrets.ECR_BACKEND_REPO }}:latest
           docker push ${{ secrets.ECR_BACKEND_REPO }}:latest
           echo "BACKEND_IMAGE=${{ secrets.ECR_BACKEND_REPO }}:latest" >> $GITHUB_ENV
+          echo "MONGO_URI=${MONGO_URI}" >> $GITHUB_ENV
 
       # Register new frontend task definition
       - name: Register Frontend Task Definition
@@ -53,7 +50,7 @@ jobs:
       # Register new backend task definition
       - name: Register Backend Task Definition
         run: |
-          sed "s|<IMAGE>|$BACKEND_IMAGE|g" ecs/backend-task-template.json > backend-task-def.json
+          sed "s|<IMAGE>|$BACKEND_IMAGE|g; s|<MONGO_URI>|$MONGO_URI|g" ecs/backend-task-template.json > backend-task-def.json
           aws ecs register-task-definition --cli-input-json file://backend-task-def.json
 
       # Update ECS services to use the *new* task definitions
