@@ -56,7 +56,9 @@ jobs:
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
-          sed "s|<IMAGE>|$BACKEND_IMAGE|g; s|<MONGO_URI>|$MONGO_URI|g" ecs/backend-task-template.json > backend-task-def.json
+          jq --arg IMAGE "$BACKEND_IMAGE" --arg MONGO_URI "$MONGO_URI" \
+            '.containerDefinitions[0].image = $IMAGE | .containerDefinitions[0].environment += [{"name":"MONGO_URI","value":$MONGO_URI}]' \
+            ecs/backend-task-template.json > backend-task-def.json
           aws ecs register-task-definition --cli-input-json file://backend-task-def.json
 
       # Update ECS services to use the *new* task definitions
