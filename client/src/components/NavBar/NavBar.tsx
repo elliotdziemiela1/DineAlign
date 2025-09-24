@@ -12,7 +12,7 @@ function NavBar() {
     return (
         <>
             <div className={styles.navbar}>
-                <p className={styles.logo} onClick={() => navigate("/home")}>nginx.conf not loading?</p>
+                <p className={styles.logo} onClick={() => navigate("/home")}>Dine Align</p>
                 <div className={styles.sbar}>
                     <input type="text" placeholder="Search.." className={styles.search} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
                     <div className={styles.searchbutton}>
