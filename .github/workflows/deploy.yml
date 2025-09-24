@@ -27,6 +27,7 @@ jobs:
           docker login --username AWS --password-stdin ${{ secrets.ECR_BACKEND_REPO }}
 
       - name: Build and Push Frontend
+        run: |
           COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           docker build -t frontend -f client/Dockerfile.frontend client/
           docker tag frontend:latest ${{ secrets.ECR_FRONTEND_REPO }}:latest
@@ -34,6 +35,7 @@ jobs:
           echo "FRONTEND_IMAGE=${{ secrets.ECR_FRONTEND_REPO }}:latest" >> $GITHUB_ENV
 
       - name: Build and Push Backend
+        run: |
           COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           docker build -t backend -f server/Dockerfile.backend server/
           docker tag backend:latest ${{ secrets.ECR_BACKEND_REPO }}:latest
