@@ -15,6 +15,11 @@ const path = require('path');
 app.get('/api', (req: Request, res: Response) => {
   res.send('Hello World!');
 })
+
+app.get("/", (_, res) => {
+  res.status(200).send("OK");
+});
+
 const uri = process.env.MONGO_URI;
 if (!uri){throw new Error("ERROR CONNNECTION UNDEFINED");}
 mongoose.connect(uri)
