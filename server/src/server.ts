@@ -45,11 +45,11 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, '../clientbuild')));
 
-require('./routes')(app, router);
+// require('./routes')(app, router);
 
-app.get('*', function(req: Request, res: Response) {
-  return res.sendFile(path.resolve(__dirname, '../clientbuild', 'index.html'));
-});
+// app.get('*', function(req: Request, res: Response) {
+//   return res.sendFile(path.resolve(__dirname, '../clientbuild', 'index.html'));
+// });
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`Example app listening on port ${port}`)
