@@ -12,19 +12,34 @@ const app = express();
 const port = 3000;
 const path = require('path');
 
+let isReady = false;
+
 app.get('/api', (req: Request, res: Response) => {
   res.send('Hello World!');
 })
 
+// Health Check Path
 app.get("/", (_, res) => {
-  res.status(200).send("OK");
+  if (isReady){
+    res.status(200).send("OK");
+  } else {
+    res.status(503).send("Starting");
+  }
 });
 
 const uri = process.env.MONGO_URI;
-if (!uri){throw new Error("ERROR CONNNECTION UNDEFINED");}
-mongoose.connect(uri)
-.then(() => console.log("Connected to MongoDB."))
-.catch((err) => console.log("MongoDB connection error: ", err));
+if (!uri){throw new Error("ERROR MONGODB URI UNDEFINED");}
+
+async function startServer() {
+  try {
+    await mongoose.connect(uri ? uri : "");
+    isReady = true; // mark container ready
+    console.log("✅ MongoDB connected");
+  } catch (err) {
+    console.log("MongoDB connection error: ", err);
+    process.exit(1);
+  }
+}
 
 
 // app.get('/api', (req: Request, res: Response) => {
@@ -56,6 +71,7 @@ require('./routes')(app, router);
 //   return res.sendFile(path.resolve(__dirname, '../clientbuild', 'index.html'));
 // });
 
+startServer();
 app.listen(port, "0.0.0.0", () => {
   console.log(`Example app listening on port ${port}`)
 })
