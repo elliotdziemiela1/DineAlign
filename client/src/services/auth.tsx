@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '..';
 import axios from 'axios';
+import { loadBalancerDNS } from '../types';
 
 
 const firebaseConfig = {
@@ -37,7 +38,7 @@ export async function signUp(username: string, email: string, password: string):
         result.user = await createUserWithEmailAndPassword(auth, email, password);
         const token = await result.user.user.getIdToken();
         sessionStorage.setItem("accessToken", token);
-        await axios.post("/api/users", {"username": username, "email": email, "password": password})
+        await axios.post(loadBalancerDNS + "/api/users", {"username": username, "email": email, "password": password})
     } catch (err: any) {
         result.success = false;
         result.error = {

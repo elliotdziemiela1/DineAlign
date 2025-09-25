@@ -8,6 +8,7 @@ import { displayPrivacy, switchPrivacyOption } from "../../utils/CalendarUtils";
 import { createCalendar } from "../../services/postData";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { loadBalancerDNS } from "../../types";
 
 interface DayEditorProps {
     calendar: CalendarDetails;
@@ -54,7 +55,7 @@ export default function Editor() {
             // If calendar does not contain an id, this means calendar created under user
             if (!calendar._id) {
                 user.dietsCreated = [...user.dietsCreated, result.data?._id as string];
-                await axios.put("/api/users/" + user._id, user);
+                await axios.put(loadBalancerDNS + "/api/users/" + user._id, user);
             }
             console.log("Result:", result);
             navigator("/calendar/" + result.data?._id);
